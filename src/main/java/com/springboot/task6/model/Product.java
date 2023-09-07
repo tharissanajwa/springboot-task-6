@@ -19,9 +19,9 @@ public class Product {
     private String name;
     private Integer price;
 
-//    @JsonIgnore
-//    @OneToMany(mappedBy = "product")
-//    private List<OrderProduct> orderProducts;
+    @JsonIgnore
+    @OneToMany(mappedBy = "product")
+    private List<OrderDetail> orderDetails;
 
     @Column(name = "created_at", columnDefinition = "DATE DEFAULT CURRENT_DATE")
     private Date createdAt;
