@@ -1,4 +1,4 @@
-package com.springboot.task6.model;
+package com.springboot.task6.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

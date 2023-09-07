@@ -1,4 +1,13 @@
-package com.springboot.task6.repository;
+package com.springboot.task6.repositories;
 
-public class MemberRepository {
+import com.springboot.task6.models.Member;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+import java.util.Optional;
+
+public interface MemberRepository extends JpaRepository<Member, Long> {
+    List<Member> findAllByDeletedAtIsNull();
+
+    Optional<Member> findByIdAndDeletedAtIsNull(Long aLong);
 }
