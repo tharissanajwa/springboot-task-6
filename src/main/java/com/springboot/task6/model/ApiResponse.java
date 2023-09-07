@@ -1,32 +1,31 @@
 package com.springboot.task6.model;
 
 public class ApiResponse {
-
-    private String message;  // Pesan yang akan dikirimkan bersama respons
-    private Object data;     // Data yang akan dikirimkan bersama respons
+    private String message;
+    private Object data;
 
     public ApiResponse() {
-        // Constructor default
+
     }
 
     public ApiResponse(String message, Object data) {
-        this.message = message;  // Mengatur pesan respons
-        this.data = data;        // Mengatur data respons
+        this.message = message;
+        this.data = data;
     }
 
     public String getMessage() {
-        return message;  // Mengembalikan pesan respons
+        return message;
     }
 
     public void setMessage(String message) {
-        this.message = message;  // Mengatur pesan respons
+        this.message = message;
     }
 
     public Object getData() {
-        return data;  // Mengembalikan data respons
+        return data;
     }
 
     public void setData(Object data) {
-        this.data = data;  // Mengatur data respons
+        this.data = data;
     }
 }

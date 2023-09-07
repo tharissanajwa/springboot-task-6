@@ -1,4 +1,5 @@
 package com.springboot.task6.utilities;
+
 public class Validation {
 
     // Metode untuk menghilangkan spasi berlebih
