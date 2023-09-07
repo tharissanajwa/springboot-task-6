@@ -31,10 +31,14 @@ public class Payment {
     @JoinColumn(name = "order_id")
     private Order order;
 
-    public Payment(Integer totalPaid, Integer discount, Integer change) {
+    public Payment() {
+    }
+
+    public Payment(Integer totalPaid, Integer discount, Integer change, Order order) {
         this.totalPaid = totalPaid;
         this.discount = discount;
         this.change = change;
+        this.order = order;
     }
 
     public Long getId() {

@@ -1,7 +1,9 @@
 package com.springboot.task6.utilities;
 
-public class Validation {
+import org.springframework.stereotype.Service;
 
+@Service
+public class Validation {
     // Metode untuk menghilangkan spasi berlebih
     public static String inputTrim(String input) {
         String inputTrim;
@@ -34,5 +36,4 @@ public class Validation {
         }
         return valid;
     }
-
 }
