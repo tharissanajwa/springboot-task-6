@@ -6,6 +6,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.util.Date;
 
@@ -18,6 +20,23 @@ public class Order {
     @Column(name = "total_amount")
     private Integer totalAmount;
     private String note;
+
+    @ManyToOne
+    @JoinColumn(name = "member_id", referencedColumnName = "id")
+    private Member member;
+
+    @ManyToOne
+    @JoinColumn(name = "employee_id", referencedColumnName = "id")
+    private Employee employee;
+
+    @ManyToOne
+    @JoinColumn(name = "table_id", referencedColumnName = "id")
+    private TableOrder table;
+
+//    @JsonIgnore
+//    @OneToMany(mappedBy = "order")
+//    private List<OrderProduct> orderProducts;
+    private String notes;
     @Column(name = " is_paid", columnDefinition = "BOOLEAN DEFAULT FALSE")
     private Boolean isPaid;
     @Column(name = "created_at", columnDefinition = "DATE DEFAULT CURRENT_DATE")
