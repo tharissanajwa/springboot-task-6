@@ -31,8 +31,8 @@ public class TableOrder {
     @JsonIgnore
     @Column(name = "deleted_at", columnDefinition = "DATE DEFAULT NULL")
     private Date deletedAt;
-//    @Column(name = "is_deleted", columnDefinition = "boolean default false")
-//    private boolean isDeleted;
+    @Column(name = "is_deleted", columnDefinition = "boolean default false")
+    private boolean isDeleted;
 
     public TableOrder() {
     }
