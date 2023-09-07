@@ -2,7 +2,7 @@ package com.springboot.task6.services;
 
 import com.springboot.task6.model.Member;
 import com.springboot.task6.repositories.MemberRepository;
-import com.springboot.task6.validation.Validation;
+import com.springboot.task6.utilities.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
