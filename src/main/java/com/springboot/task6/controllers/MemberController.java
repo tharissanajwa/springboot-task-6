@@ -1,7 +1,7 @@
 package com.springboot.task6.controllers;
 
-import com.springboot.task6.models.ApiResponse;
-import com.springboot.task6.models.Member;
+import com.springboot.task6.model.ApiResponse;
+import com.springboot.task6.model.Member;
 import com.springboot.task6.services.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

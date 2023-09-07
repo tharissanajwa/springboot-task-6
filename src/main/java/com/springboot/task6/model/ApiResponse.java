@@ -1,4 +1,4 @@
-package com.springboot.task6.models;
+package com.springboot.task6.model;
 
 public class ApiResponse {
     private String message;

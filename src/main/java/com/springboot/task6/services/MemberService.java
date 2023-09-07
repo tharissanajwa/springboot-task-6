@@ -1,6 +1,6 @@
 package com.springboot.task6.services;
 
-import com.springboot.task6.models.Member;
+import com.springboot.task6.model.Member;
 import com.springboot.task6.repositories.MemberRepository;
 import com.springboot.task6.validation.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
