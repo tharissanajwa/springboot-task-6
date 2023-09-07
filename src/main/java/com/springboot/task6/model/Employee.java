@@ -29,16 +29,11 @@ public class Employee {
     @Column(name = "deleted_at", columnDefinition = "DATE DEFAULT NULL")
     private Date deletedAt;
 
+    public Employee() {
+    }
+
     public Employee(String name) {
         this.name = name;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -49,14 +44,7 @@ public class Employee {
         this.name = name;
     }
 
-    public List<Order> getOrders() {
-        return orders;
-    }
-
-    public void setOrders(List<Order> orders) {
-        this.orders = orders;
-    }
-
+    @JsonIgnore
     public Date getCreatedAt() {
         return createdAt;
     }
@@ -65,6 +53,7 @@ public class Employee {
         this.createdAt = createdAt;
     }
 
+    @JsonIgnore
     public Date getUpdatedAt() {
         return updatedAt;
     }
@@ -73,6 +62,7 @@ public class Employee {
         this.updatedAt = updatedAt;
     }
 
+    @JsonIgnore
     public Date getDeletedAt() {
         return deletedAt;
     }
