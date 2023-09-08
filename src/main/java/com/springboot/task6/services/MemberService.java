@@ -78,7 +78,7 @@ public class MemberService {
         return result;
     }
 
-    // Metode untuk menghapus data secara soft delete melalui repository
+    // Metode untuk menghapus data anggota secara soft delete melalui repository
     public boolean deleteMember(Long id) {
         boolean result = false;
         if (getMemberById(id) != null) {
