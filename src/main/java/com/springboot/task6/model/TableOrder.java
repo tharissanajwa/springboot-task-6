@@ -22,6 +22,8 @@ public class TableOrder {
     @JsonIgnore
     @OneToMany(mappedBy = "table")
     private List<Order> orders;
+    @Column(name = "is_available", columnDefinition = "BOOLEAN DEFAULT TRUE")
+    private boolean isAvailable;
     @JsonIgnore
     @Column(name = "created_at", columnDefinition = "DATE DEFAULT CURRENT_DATE")
     private Date createdAt;
@@ -57,6 +59,14 @@ public class TableOrder {
 
     public List<Order> getOrders() {
         return orders;
+    }
+
+    public boolean isAvailable() {
+        return isAvailable;
+    }
+
+    public void setAvailable(boolean available) {
+        isAvailable = available;
     }
 
     public void setOrders(List<Order> orders) {

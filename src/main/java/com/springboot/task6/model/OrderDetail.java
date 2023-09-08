@@ -29,7 +29,8 @@ public class OrderDetail {
     private Product product;
 
     @Column(name = "is_done", columnDefinition = "BOOLEAN DEFAULT FALSE")
-    private Boolean isDone;
+    private boolean isDone;
+    private int qty;
 
     @JsonIgnore
     @Column(name = "created_at", columnDefinition = "DATE DEFAULT CURRENT_DATE")
@@ -44,9 +45,10 @@ public class OrderDetail {
     public OrderDetail() {
     }
 
-    public OrderDetail(Order order, Product product) {
+    public OrderDetail(Order order, Product product, Integer quantity) {
         this.order = order;
         this.product = product;
+        this.qty = quantity;
     }
 
     public Long getId() {
@@ -79,6 +81,14 @@ public class OrderDetail {
 
     public void setDone(boolean done) {
         isDone = done;
+    }
+
+    public int getQty() {
+        return qty;
+    }
+
+    public void setQty(int quantity) {
+        this.qty = quantity;
     }
 
     public Date getCreatedAt() {
