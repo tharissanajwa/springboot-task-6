@@ -26,7 +26,7 @@ public class ProductService {
         return responseMessage;
     }
 
-    // Metode untuk mendapatkan semua daftar anggota yang belum terhapus melalui repository
+    // Metode untuk mendapatkan semua daftar barang yang belum terhapus melalui repository
     public List<Product> getAllProduct() {
         if (productRepository.findAllByDeletedAtIsNull().isEmpty()) {
             responseMessage = "Data doesn't exists, please insert new data Product.";
@@ -36,7 +36,7 @@ public class ProductService {
         return productRepository.findAllByDeletedAtIsNull();
     }
 
-    // Metode untuk mendapatkan data anggota berdasarkan id melalui repository
+    // Metode untuk mendapatkan data barang berdasarkan id melalui repository
     public Product getProductById(Long id) {
         Optional<Product> result = productRepository.findByIdAndDeletedAtIsNull(id);
         if (!result.isPresent()) {
@@ -48,7 +48,7 @@ public class ProductService {
         }
     }
 
-    // Metode untuk menambahkan anggota ke dalam data melalui repository
+    // Metode untuk menambahkan barang ke dalam data melalui repository
     public Product insertProduct(String name, Integer price) {
         Product result = null;
         String nameValidation = inputValidation(name);
@@ -67,7 +67,7 @@ public class ProductService {
         return result;
     }
 
-    // Metode untuk memperbarui informasi anggota melalui repository
+    // Metode untuk memperbarui informasi barang melalui repository
     public Product updateProduct(Long id, String name, Integer price) {
         Product result = getProductById(id);
         String nameValidation = inputValidation(name);
@@ -91,7 +91,7 @@ public class ProductService {
         return result;
     }
 
-    // Metode untuk menghapus data secara soft delete melalui repository
+    // Metode untuk menghapus data barang secara soft delete melalui repository
     public boolean deleteProduct(Long id) {
         boolean result = false;
         Product product = getProductById(id);
