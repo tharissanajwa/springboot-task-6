@@ -31,9 +31,14 @@ public class TableOrder {
     @JsonIgnore
     @Column(name = "deleted_at", columnDefinition = "DATE DEFAULT NULL")
     private Date deletedAt;
+    @Column(name = "is_deleted", columnDefinition = "boolean default false")
+    private boolean isDeleted;
 
     public TableOrder() {
+    }
 
+    public TableOrder(String name) {
+        this.name = name;
     }
 
     public Long getId() {
