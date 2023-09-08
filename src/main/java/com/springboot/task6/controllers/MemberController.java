@@ -23,59 +23,63 @@ public class MemberController {
     @Autowired
     private MemberService memberService;
 
-    // Metode untuk mengambil semua data pegawai dari fungsi yg telah dibuat di service
+    // Metode untuk mengambil semua data anggota dari fungsi yg telah dibuat di service
     @GetMapping("")
-    public ResponseEntity getAllMember() {
+    public ResponseEntity<ApiResponse> getAllMember() {
         List<Member> members = memberService.getAllMember();
         ApiResponse response = new ApiResponse(memberService.getResponseMessage(), members);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    // Metode untuk mengambil data pegawai berdasarkan id dari fungsi yg telah dibuat di service
+    // Metode untuk mengambil data anggota berdasarkan id dari fungsi yg telah dibuat di service
     @GetMapping("/{id}")
-    public ResponseEntity getMemberById(@PathVariable("id") Long id) {
+    public ResponseEntity<ApiResponse> getMemberById(@PathVariable("id") Long id) {
         Member members = memberService.getMemberById(id);
         ApiResponse response = new ApiResponse(memberService.getResponseMessage(), members);
-        if (members != null) {
-            return ResponseEntity.status(HttpStatus.OK).body(response);
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }
+        HttpStatus httpStatus;
+
+        if (members != null) httpStatus = HttpStatus.OK;
+        else httpStatus = HttpStatus.BAD_REQUEST;
+
+        return ResponseEntity.status(httpStatus).body(response);
     }
 
-    // Metode untuk membuat pegawai baru dari fungsi yg telah dibuat di service
+    // Metode untuk membuat anggota baru dari fungsi yg telah dibuat di service
     @PostMapping("")
-    public ResponseEntity insertMember(@RequestBody Member member) {
+    public ResponseEntity<ApiResponse> insertMember(@RequestBody Member member) {
         Member members = memberService.insertMember(member.getName());
         ApiResponse response = new ApiResponse(memberService.getResponseMessage(), members);
-        if (members != null) {
-            return ResponseEntity.status(HttpStatus.OK).body(response);
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }
+        HttpStatus httpStatus;
+
+        if (members != null) httpStatus = HttpStatus.OK;
+        else httpStatus = HttpStatus.BAD_REQUEST;
+
+        return  ResponseEntity.status(httpStatus).body(response);
     }
 
-    // Metode untuk memperbarui informasi pegawai dari fungsi yg telah dibuat di service
+    // Metode untuk memperbarui informasi anggota dari fungsi yg telah dibuat di service
     @PutMapping("/{id}")
-    public ResponseEntity updateMember(@PathVariable("id") Long id, @RequestBody Member member) {
+    public ResponseEntity<ApiResponse> updateMember(@PathVariable("id") Long id, @RequestBody Member member) {
         Member members = memberService.updateMember(id, member.getName());
         ApiResponse response = new ApiResponse(memberService.getResponseMessage(), members);
-        if (members != null) {
-            return ResponseEntity.status(HttpStatus.OK).body(response);
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }
+        HttpStatus httpStatus;
+
+        if (members != null)  httpStatus = HttpStatus.OK;
+        else httpStatus = HttpStatus.BAD_REQUEST;
+
+        return ResponseEntity.status(httpStatus).body(response);
     }
 
-    // Metode untuk menghapus pegawai berdasarkan dari fungsi yg telah dibuat di service
+    // Metode untuk menghapus anggota berdasarkan dari fungsi yg telah dibuat di service
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteMember(@PathVariable("id") Long id) {
-        boolean valid = memberService.deleteMember(id);
+    public ResponseEntity<ApiResponse> deleteMember(@PathVariable("id") Long id) {
+        boolean isValid = memberService.deleteMember(id);
         ApiResponse response = new ApiResponse(memberService.getResponseMessage(), null);
-        if (valid) {
-            return ResponseEntity.status(HttpStatus.OK).body(response);
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }
+        HttpStatus httpStatus;
+
+        if (isValid) httpStatus = HttpStatus.OK;
+        else httpStatus = HttpStatus.BAD_REQUEST;
+
+        return ResponseEntity.status(httpStatus).body(response);
     }
 }
