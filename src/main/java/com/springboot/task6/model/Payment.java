@@ -34,10 +34,9 @@ public class Payment {
     public Payment() {
     }
 
-    public Payment(Integer totalPaid, Integer discount, Integer change, Order order) {
+    public Payment(Integer totalPaid, Integer discount, Order order) {
         this.totalPaid = totalPaid;
         this.discount = discount;
-        this.change = change;
         this.order = order;
     }
 
@@ -61,6 +60,10 @@ public class Payment {
         return this.createdAt;
     }
 
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
     public Date getUpdatedAt() {
         return this.updatedAt;
     }
@@ -75,5 +78,25 @@ public class Payment {
 
     public void setDeletedAt(Date deletedAt) {
         this.deletedAt = deletedAt;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
+    public void setTotalPaid(Integer totalPaid) {
+        this.totalPaid = totalPaid;
+    }
+
+    public void setDiscount(Integer discount) {
+        this.discount = discount;
+    }
+
+    public void setChange(Integer change) {
+        this.change = change;
     }
 }

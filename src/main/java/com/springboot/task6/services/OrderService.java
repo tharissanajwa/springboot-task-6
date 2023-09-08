@@ -70,7 +70,7 @@ public class OrderService {
         if (result != null) {
             Integer total = 0;
             for (int indeks = 0; indeks <= orderDetailService.getOrderDetailByOrderId(id).size()-1; indeks++) {
-                total += (orderDetailService.getOrderDetailByOrderId(id).get(indeks).getProduct().getPrice() * orderDetailService.getOrderDetailByOrderId(id).get(indeks).getQuantity());
+                total += (orderDetailService.getOrderDetailByOrderId(id).get(indeks).getProduct().getPrice() * orderDetailService.getOrderDetailByOrderId(id).get(indeks).getQty());
             }
             result.setOrderDetails(orderDetailService.getOrderDetailByOrderId(id));
             result.setTotalAmount(total);
