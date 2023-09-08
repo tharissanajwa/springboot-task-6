@@ -19,9 +19,6 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "total_amount")
-    private Integer totalAmount;
-    private String note;
 
     @ManyToOne
     @JoinColumn(name = "member_id", referencedColumnName = "id")
@@ -34,26 +31,31 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "table_id", referencedColumnName = "id")
     private TableOrder table;
-
     @OneToMany(mappedBy = "order")
     private List<OrderDetail> orderDetails;
 
-    @Column(name = " is_paid", columnDefinition = "BOOLEAN DEFAULT FALSE")
-    private Boolean isPaid;
+    @Column(name = "total_amount")
+    private Integer totalAmount;
+    private String note;
+    @Column(name = " is_paid", columnDefinition = "boolean default false")
+    private boolean isPaid;
+    @OneToOne(mappedBy = "order")
+    private Payment payment;
     @Column(name = "created_at", columnDefinition = "DATE DEFAULT CURRENT_DATE")
     private Date createdAt;
     @Column(name = "updated_at", columnDefinition = "DATE DEFAULT NULL")
     private Date updatedAt;
     @Column(name = "deleted_at", columnDefinition = "DATE DEFAULT NULL")
     private Date deletedAt;
-    @OneToOne(mappedBy = "order")
-    private Payment payment;
 
-    public Order(Integer totalAmount, String note, Boolean isPaid) {
-        this.totalAmount = totalAmount;
-        this.note = note;
-        this.isPaid = isPaid;
-        this.payment = null;
+
+    public Order() {
+    }
+
+    public Order(Member member, Employee employee, TableOrder table) {
+        this.member = member;
+        this.employee = employee;
+        this.table = table;
     }
 
     public Long getId() {
@@ -76,8 +78,60 @@ public class Order {
         this.isPaid = isPaid;
     }
 
+    public void setTotalAmount(Integer totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
+    public Member getMember() {
+        return member;
+    }
+
+    public void setMember(Member member) {
+        this.member = member;
+    }
+
+    public Employee getEmployee() {
+        return employee;
+    }
+
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
+    }
+
+    public TableOrder getTable() {
+        return table;
+    }
+
+    public void setTable(TableOrder table) {
+        this.table = table;
+    }
+
+    public List<OrderDetail> getOrderDetails() {
+        return orderDetails;
+    }
+
+    public void setOrderDetails(List<OrderDetail> orderDetails) {
+        this.orderDetails = orderDetails;
+    }
+
+    public Payment getPayment() {
+        return payment;
+    }
+
+    public void setPayment(Payment payment) {
+        this.payment = payment;
+    }
+
     public Date getCreatedAt() {
         return this.createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 
     public Date getUpdatedAt() {
