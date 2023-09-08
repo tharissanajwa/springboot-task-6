@@ -25,7 +25,7 @@ public class ProductController {
 
     // Metode untuk mengambil semua data barang dari fungsi yg telah dibuat di service
     @GetMapping("")
-    public ResponseEntity getAllProduct() {
+    public ResponseEntity<ApiResponse> getAllProduct() {
         List<Product> employees = productService.getAllProduct();
         ApiResponse response = new ApiResponse(productService.getResponseMessage(), employees);
         return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -33,49 +33,53 @@ public class ProductController {
 
     // Metode untuk mengambil data barang berdasarkan id dari fungsi yg telah dibuat di service
     @GetMapping("/{id}")
-    public ResponseEntity getProductById(@PathVariable("id") Long id) {
+    public ResponseEntity<ApiResponse> getProductById(@PathVariable("id") Long id) {
         Product products = productService.getProductById(id);
         ApiResponse response = new ApiResponse(productService.getResponseMessage(), products);
-        if (products != null) {
-            return ResponseEntity.status(HttpStatus.OK).body(response);
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }
+        HttpStatus httpStatus;
+
+        if (products != null) httpStatus = HttpStatus.OK;
+        else httpStatus = HttpStatus.BAD_REQUEST;
+
+        return ResponseEntity.status(httpStatus).body(response);
     }
 
-    // Metode untuk membuat product baru dari fungsi yg telah dibuat di service
+    // Metode untuk membuat barang baru dari fungsi yg telah dibuat di service
     @PostMapping("")
-    public ResponseEntity insertProduct(@RequestBody Product product) {
+    public ResponseEntity<ApiResponse> insertProduct(@RequestBody Product product) {
         Product newProduct = productService.insertProduct(product.getName(), product.getPrice());
         ApiResponse response = new ApiResponse(productService.getResponseMessage(), newProduct);
-        if (newProduct != null) {
-            return ResponseEntity.status(HttpStatus.OK).body(response);
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }
+        HttpStatus httpStatus;
+
+        if (newProduct != null) httpStatus = HttpStatus.OK;
+        else httpStatus = HttpStatus.BAD_REQUEST;
+
+        return ResponseEntity.status(httpStatus).body(response);
     }
 
-    // Metode untuk memperbarui informasi pegawai dari fungsi yg telah dibuat di service
+    // Metode untuk memperbarui informasi barang dari fungsi yg telah dibuat di service
     @PutMapping("/{id}")
-    public ResponseEntity updateProduct(@PathVariable("id") Long id, @RequestBody Product product) {
+    public ResponseEntity<ApiResponse> updateProduct(@PathVariable("id") Long id, @RequestBody Product product) {
         Product products = productService.updateProduct(id, product.getName(), product.getPrice());
         ApiResponse response = new ApiResponse(productService.getResponseMessage(), products);
-        if (products != null) {
-            return ResponseEntity.status(HttpStatus.OK).body(response);
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }
+        HttpStatus httpStatus;
+
+        if (products != null) httpStatus = HttpStatus.OK;
+        else httpStatus = HttpStatus.BAD_REQUEST;
+
+        return ResponseEntity.status(httpStatus).body(response);
     }
 
-    // Metode untuk menghapus pegawai berdasarkan dari fungsi yg telah dibuat di service
+    // Metode untuk menghapus barang berdasarkan dari fungsi yg telah dibuat di service
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteProduct(@PathVariable("id") Long id) {
-        boolean valid = productService.deleteProduct(id);
+    public ResponseEntity<ApiResponse> deleteProduct(@PathVariable("id") Long id) {
+        boolean isValid = productService.deleteProduct(id);
         ApiResponse response = new ApiResponse(productService.getResponseMessage(), null);
-        if (valid) {
-            return ResponseEntity.status(HttpStatus.OK).body(response);
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }
+        HttpStatus httpStatus;
+
+        if (isValid) httpStatus = HttpStatus.OK;
+        else httpStatus = HttpStatus.BAD_REQUEST;
+
+        return ResponseEntity.status(httpStatus).body(response);
     }
 }
