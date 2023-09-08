@@ -23,7 +23,7 @@ public class TableService {
     }
 
     public List<TableOrder> getTableOrders() {
-        List<TableOrder> result = repository.findAllByIsDeletedFalse();
+        List<TableOrder> result = repository.findAllByDeletedAtIsNull();
 
         if (result.isEmpty()) responseMessage = "Data doesn't exists, please insert new data table.";
         else responseMessage = "Data successfully loaded.";
@@ -32,7 +32,7 @@ public class TableService {
     }
 
     public TableOrder getTableOrderById(Long id) {
-        Optional<TableOrder> tableOrder = repository.findByIdAndIsDeletedFalse(id);
+        Optional<TableOrder> tableOrder = repository.findByIdAndDeletedAtIsNull(id);
 
         if (tableOrder.isPresent()) {
             responseMessage = "Data successfully loaded.";
@@ -89,10 +89,10 @@ public class TableService {
     private String inputValidation(String name) {
         String result = "";
 
-        if (Validation.inputCheck(Validation.inputTrim(name)) == 1) {
+        if (Validation.inputContainsNumber(Validation.inputTrim(name)) == 1) {
             result = "Sorry, table name cannot be blank.";
-        } else if (Validation.inputCheck(Validation.inputTrim(name)) == 2) {
-            result = "Sorry, table name can only filled by letters";
+        } else if (Validation.inputContainsNumber(Validation.inputTrim(name)) == 2) {
+            result = "Sorry, table name can only filled by letters and numbers";
         }
 
         return result;
