@@ -33,7 +33,6 @@ public class Order {
     private TableOrder table;
     @OneToMany(mappedBy = "order")
     private List<OrderDetail> orderDetails;
-
     @Column(name = "total_amount")
     private Integer totalAmount;
     private String note;

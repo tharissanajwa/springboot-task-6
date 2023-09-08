@@ -22,7 +22,7 @@ public class TableOrder {
     @JsonIgnore
     @OneToMany(mappedBy = "table")
     private List<Order> orders;
-    @Column(name = "is_available", columnDefinition = "BOOLEAN DEFAULT TRUE")
+    @Column(name = "is_available", columnDefinition = "boolean default false")
     private boolean isAvailable;
     @JsonIgnore
     @Column(name = "created_at", columnDefinition = "DATE DEFAULT CURRENT_DATE")

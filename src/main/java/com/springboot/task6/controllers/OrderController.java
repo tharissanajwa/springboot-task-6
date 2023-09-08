@@ -2,6 +2,7 @@ package com.springboot.task6.controllers;
 
 import com.springboot.task6.model.ApiResponse;
 import com.springboot.task6.model.Order;
+import com.springboot.task6.model.OrderDetail;
 import com.springboot.task6.services.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -55,6 +56,13 @@ public class OrderController {
         else httpStatus = HttpStatus.BAD_REQUEST;
 
         return  ResponseEntity.status(httpStatus).body(response);
+    }
+
+    @PostMapping("/{id}/products")
+        public  ResponseEntity<ApiResponse> addProductToOrder(@PathVariable("id") Long orderId, @RequestBody OrderDetail detail){
+        OrderDetail orderDetail = orderService.createOrderDetail(orderId, detail.getProduct().getId(), detail.getQty());
+
+        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse(orderService.getResponseMessage(), orderDetail));
     }
 
     // Metode untuk memperbarui informasi order dari fungsi yg telah dibuat di service
