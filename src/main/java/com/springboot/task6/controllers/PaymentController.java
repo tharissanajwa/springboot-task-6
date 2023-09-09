@@ -15,9 +15,9 @@ public class PaymentController {
     private PaymentService paymentService;
 
     // Metode untuk membuat pembayaran baru dari fungsi yg telah dibuat di service
-    @PostMapping("")
-    public ResponseEntity<ApiResponse> insertPayment(@RequestBody Payment payment) {
-        Payment payments = paymentService.insertPayment(payment.getTotalPaid(), payment.getDiscount(), payment.getOrder().getId());
+    @PostMapping("/{order}")
+    public ResponseEntity<ApiResponse> insertPayment(@PathVariable("order") Long order, @RequestBody Payment payment) {
+        Payment payments = paymentService.insertPayment(payment.getTotalPaid(), payment.getDiscount(), order);
         ApiResponse response = new ApiResponse(paymentService.getResponseMessage(), payments);
         HttpStatus httpStatus;
 

@@ -29,58 +29,29 @@ public class PaymentService {
         return responseMessage;
     }
 
-    public boolean isPaymentValid(Long orderId) {
-        Order order = orderService.getOrderById(orderId);
-
-        if (order == null) {
-            responseMessage = "Order not found.";
-            return false;
-        }
-
-        if (order.getIsPaid()) {
-            responseMessage = "Payment cannot be made because the order is already paid.";
-            return false;
-        }
-
-        for (OrderDetail orderDetail : order.getOrderDetails()) {
-            if (!orderDetail.isDone()) {
-                responseMessage = "Payment cannot be made because not all order details are done.";
-                return false;
-            }
-        }
-
-        return true;
-    }
-
     public Payment insertPayment(Integer totalPaid, Integer discount, Long orderId) {
-        Order order = orderService.getOrderById(orderId);
-
-        if (order == null) {
-            responseMessage = "Order not found.";
+        if (!isPaymentValid(orderId).isEmpty()) {
+            responseMessage = isPaymentValid(orderId);
             return null;
+        } else {
+            Order order = orderService.getOrderById(orderId);
+            Integer change = calculateChange(totalPaid, order.getTotalAmount(), discount);
+
+            Payment result = new Payment(totalPaid, discount, order);
+            result.setChange(change);
+            result.setCreatedAt(new Date());
+            paymentRepository.save(result);
+
+            order.setIsPaid(true);
+            orderRepository.save(order);
+
+            responseMessage = "Payment successfully added!";
+            return result;
         }
-
-        if (!isPaymentValid(orderId)) {
-            return null;
-        }
-
-        Integer change = calculateChange(totalPaid, order.getTotalAmount(), discount);
-
-        Payment result = new Payment(totalPaid, discount, order);
-        result.setChange(change);
-
-        result.setCreatedAt(new Date());
-        paymentRepository.save(result);
-
-        order.setIsPaid(true);
-        orderRepository.save(order);
-
-        responseMessage = "Payment successfully added!";
-        return result;
     }
 
     public boolean deletePayment(Long paymentId) {
-        Optional<Payment> optionalPayment = paymentRepository.findById(paymentId);
+        Optional<Payment> optionalPayment = paymentRepository.findByIdAndDeletedAtIsNull(paymentId);
 
         if (optionalPayment.isPresent()) {
             optionalPayment.get().setDeletedAt(new Date());
@@ -96,5 +67,28 @@ public class PaymentService {
 
     public Integer calculateChange(Integer totalPaid, Integer totalAmount, Integer discount) {
         return totalPaid - (totalAmount - discount);
+    }
+
+    private String isPaymentValid(Long orderId) {
+        String result = "";
+        Order order = orderService.getOrderById(orderId);
+
+        if (order == null) {
+            result = "Sorry, order is not found";
+        } else {
+            boolean isDone = true;
+            for (OrderDetail orderDetail : order.getOrderDetails()) {
+                if (!orderDetail.isDone()) {
+                    isDone = false;
+                }
+            }
+
+            if (order.getIsPaid()) {
+                result = "Payment cannot be made because the order has been paid.";
+            } else if (!isDone) {
+                result =  "Payment cannot be made because not all order details are done.";
+            }
+        }
+        return result;
     }
 }

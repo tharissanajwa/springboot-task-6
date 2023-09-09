@@ -1,5 +1,7 @@
 package com.springboot.task6.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -56,6 +58,7 @@ public class Payment {
         return this.change;
     }
 
+    @JsonIgnore
     public Date getCreatedAt() {
         return this.createdAt;
     }
@@ -64,6 +67,7 @@ public class Payment {
         this.createdAt = createdAt;
     }
 
+    @JsonIgnore
     public Date getUpdatedAt() {
         return this.updatedAt;
     }
@@ -72,6 +76,7 @@ public class Payment {
         this.updatedAt = updatedAt;
     }
 
+    @JsonIgnore
     public Date getDeletedAt() {
         return this.deletedAt;
     }
@@ -80,6 +85,7 @@ public class Payment {
         this.deletedAt = deletedAt;
     }
 
+    @JsonIgnore
     public Order getOrder() {
         return order;
     }
