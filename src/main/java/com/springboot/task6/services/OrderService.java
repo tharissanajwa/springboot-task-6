@@ -39,9 +39,6 @@ public class OrderService {
     @Autowired
     private ProductService productService;
 
-    @Autowired
-    private OrderDetailService orderDetailService;
-
     private String responseMessage; // Pesan status untuk memberi informasi kepada pengguna
 
     // Metode untuk mendapatkan pesan status
@@ -52,14 +49,12 @@ public class OrderService {
     // Metode untuk mendapatkan semua daftar order yang belum terhapus melalui repository
     public List<Order> getAllOrder() {
         List<Order> orders = orderRepository.findAllByDeletedAtIsNull();
-
         if (orders.isEmpty()) {
             responseMessage = "Data doesn't exists, please insert new data order.";
         } else {
             responseMessage = "Data successfully loaded.";
         }
-
-        return orderRepository.findAllByDeletedAtIsNull();
+        return orders;
     }
 
     // Metode untuk mendapatkan data order berdasarkan id melalui repository
@@ -73,7 +68,6 @@ public class OrderService {
             responseMessage = "Sorry, id order is not found.";
             return null;
         }
-
     }
 
     // Metode untuk menambahkan order baru ke dalam data melalui repository
@@ -109,14 +103,6 @@ public class OrderService {
     public Order updateOrder(Long id, String note) {
         Order result = getOrderById(id);
         if (result != null) {
-            int total = 0;
-
-            for (int indeks = 0; indeks <= getOrderDetailByOrderId(id).size() - 1; indeks++) {
-                total += (getOrderDetailByOrderId(id).get(indeks).getProduct().getPrice() * getOrderDetailByOrderId(id).get(indeks).getQty());
-            }
-
-            result.setTotalAmount(total);
-            result.setOrderDetails(getOrderDetailByOrderId(id));
             result.setNote(note);
             result.setUpdatedAt(new Date());
             orderRepository.save(result);
@@ -153,10 +139,12 @@ public class OrderService {
                         result = new OrderDetail(order, product, qty);
                         order.addOrderDetail(result);
                         int totalAmount = accumulateTotalAmount(order);
-                        int pointObtained = accumulatePoints(result);
 
                         order.setTotalAmount(totalAmount);
-                        order.setPointObtained(pointObtained);
+                        if (order.getMember() != null) {
+                            int pointObtained = accumulatePoints(result);
+                            order.setPointObtained(pointObtained);
+                        }
 
                         orderDetailRepository.save(result);
                         orderRepository.save(order);
@@ -174,15 +162,42 @@ public class OrderService {
         return result;
     }
 
-    public OrderDetail setOrderDetailDone(Long orderId, Long productId) {
-        OrderDetail orderDetail = getOrderDetailById(orderId, productId);
+    public OrderDetail setOrderDetailDone(Long orderId, Long detailOrderId) {
+        OrderDetail orderDetail = getOrderDetailById(orderId, detailOrderId);
 
         if (orderDetail != null) {
             orderDetail.setDone(true);
+            responseMessage = "Product successfully set to done.";
             orderDetailRepository.save(orderDetail);
         }
 
         return orderDetail;
+    }
+
+    public boolean deleteOrderDetail(Long orderId, Long detailOrderId) {
+        boolean result = true;
+        OrderDetail orderDetail = getOrderDetailById(orderId, detailOrderId);
+
+        if (orderDetail != null) {
+            if (!orderDetail.isDone()) {
+                orderDetail.setDeletedAt(new Date());
+                orderDetailRepository.deleteById(detailOrderId);
+                Order order = getOrderById(orderId);
+                int total = accumulateTotalAmount(order);
+                getOrderById(orderId).setTotalAmount(total);
+                if (order.getMember() != null) {
+                    int pointObtained = total/1000;
+                    order.setPointObtained(pointObtained);
+                }
+                orderRepository.save(order);
+                responseMessage = "Data order detail successfully removed.";
+            } else {
+                result = false;
+                responseMessage = "Sorry, order with product ID " + detailOrderId + " has been done.";
+            }
+        }
+
+        return result;
     }
 
     // Metode untuk memvalidasi inputan pengguna
@@ -207,10 +222,6 @@ public class OrderService {
         return result;
     }
 
-    public List<OrderDetail> getOrderDetailByOrderId(Long orderId) {
-        return orderDetailRepository.getOrderDetailsByOrderIdAndDeletedAtIsNull(orderId);
-    }
-
     private int accumulateTotalAmount(Order order) {
         int total = 0;
 
@@ -218,7 +229,6 @@ public class OrderService {
             OrderDetail detail = order.getOrderDetails().get(i);
             int productPrice = detail.getProduct().getPrice();
             int qty = detail.getQty();
-
             total += (productPrice * qty); // add price * qty to total variable for every iteration
         }
 
@@ -235,37 +245,25 @@ public class OrderService {
         return pointFromOrder;
     }
 
-    private OrderDetail getOrderDetailById(Long orderId, Long productId) {
+    private OrderDetail getOrderDetailById(Long orderId, Long detailOrderId) {
         OrderDetail orderDetail = null;
         List<OrderDetail> orderDetails = orderDetailRepository.getOrderDetailsByOrderIdAndDeletedAtIsNull(orderId);
         int i = 0;
 
         while (i < orderDetails.size()) {
             OrderDetail orderDetailFromLoop = orderDetails.get(i);
-            Product productFromOrderDetail = orderDetailFromLoop.getProduct();
             Order order = orderDetailFromLoop.getOrder();
 
-            if (order.getId().equals(orderId) && productFromOrderDetail.getId().equals(productId)) {
+            if (order.getId().equals(orderId) && orderDetailFromLoop.getId().equals(detailOrderId)) {
                 orderDetail = orderDetailFromLoop;
-                responseMessage = "Product successfully set to done.";
             }
-
             i++;
         }
 
         if (orderDetail == null) {
-            responseMessage = "Sorry, order with ID + " + orderId + " doesn't have any product yet.";
+            responseMessage = "Sorry, order with ID " + orderId + " doesn't have any product yet.";
         }
 
         return orderDetail;
-    }
-
-    private void addPointsToMember(Order order) {
-        Member member = order.getMember();
-
-        if (member != null) {
-            member.addPoints(order.getPointObtained());
-            memberRepository.save(member);
-        }
     }
 }
