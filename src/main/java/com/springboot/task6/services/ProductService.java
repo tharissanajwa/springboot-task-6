@@ -33,12 +33,14 @@ public class ProductService {
         } else {
             responseMessage = "Data successfully loaded.";
         }
+
         return productRepository.findAllByDeletedAtIsNull();
     }
 
     // Metode untuk mendapatkan data barang berdasarkan id melalui repository
     public Product getProductById(Long id) {
         Optional<Product> result = productRepository.findByIdAndDeletedAtIsNull(id);
+
         if (!result.isPresent()) {
             responseMessage = "Sorry, id product is not found.";
             return null;
@@ -54,9 +56,9 @@ public class ProductService {
         String nameValidation = inputValidation(name);
         String priceValidation = inputValidationPrice(price);
 
-        if (!nameValidation.isEmpty()) {
+        if (!nameValidation.equals("")) {
             responseMessage = nameValidation;
-        } else if (!priceValidation.isEmpty()) {
+        } else if (!priceValidation.equals("")) {
             responseMessage = priceValidation;
         } else {
             result = new Product(Validation.inputTrim(name), price);
@@ -64,6 +66,7 @@ public class ProductService {
             productRepository.save(result);
             responseMessage = "Data successfully added!";
         }
+
         return result;
     }
 
@@ -74,10 +77,10 @@ public class ProductService {
         String priceValidation = inputValidationPrice(price);
 
         if (result != null) {
-            if (!nameValidation.isEmpty()) {
+            if (!nameValidation.equals("")) {
                 responseMessage = nameValidation;
                 return null;
-            } else if (!priceValidation.isEmpty()) {
+            } else if (!priceValidation.equals("")) {
                 responseMessage = priceValidation;
                 return null;
             } else {
@@ -88,6 +91,7 @@ public class ProductService {
                 responseMessage = "Data successfully updated!";
             }
         }
+
         return result;
     }
 
@@ -95,33 +99,40 @@ public class ProductService {
     public boolean deleteProduct(Long id) {
         boolean result = false;
         Product product = getProductById(id);
+
         if (getProductById(id) != null) {
             getProductById(id).setDeletedAt(new Date());
             productRepository.save(product);
             result = true;
             responseMessage = "Data successfully removed!";
         }
+
         return result;
     }
 
     // Metode untuk memvalidasi inputan pengguna
     private String inputValidation(String name) {
         String result = "";
+
         if (Validation.inputCheck(Validation.inputTrim(name)) == 1) {
             result = "Sorry, member name cannot be blank.";
         }
+
         if (Validation.inputCheck(Validation.inputTrim(name)) == 2) {
             result = "Sorry, member name can only filled by letters";
         }
+
         return result;
     }
 
     // Metode untuk memvalidasi inputan pengguna untuk harga (price)
     private String inputValidationPrice(Integer price) {
         String result = "";
+
         if ( price <= 0) {
             result = "Sorry, price must be more than 0.";
         }
+
         return result;
     }
 }

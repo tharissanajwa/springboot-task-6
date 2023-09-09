@@ -33,12 +33,14 @@ public class MemberService {
         } else {
             responseMessage = "Data successfully loaded.";
         }
+
         return memberRepository.findAllByDeletedAtIsNull();
     }
 
     // Metode untuk mendapatkan data anggota berdasarkan id melalui repository
     public Member getMemberById(Long id) {
         Optional<Member> result = memberRepository.findByIdAndDeletedAtIsNull(id);
+
         if (!result.isPresent()) {
             responseMessage = "Sorry, id member is not found.";
             return null;
@@ -51,7 +53,8 @@ public class MemberService {
     // Metode untuk menambahkan anggota ke dalam data melalui repository
     public Member insertMember(String name) {
         Member result = null;
-        if (inputValidation(name) != "") {
+
+        if (!inputValidation(name).equals("")) {
             responseMessage = inputValidation(name);
         } else {
             result = new Member(Validation.inputTrim(name));
@@ -64,16 +67,18 @@ public class MemberService {
 
     // Metode untuk memperbarui informasi anggota melalui repository
     public Member updateMember(Long id, String name) {
-        Member result = null;
-        if (inputValidation(name) != "") {
-            responseMessage = inputValidation(name);
-        }
-        if (getMemberById(id) != null) {
-            getMemberById(id).setName(Validation.inputTrim(name));
-            result = getMemberById(id);
-            result.setUpdatedAt(new Date());
-            memberRepository.save(result);
-            responseMessage = "Data successfully updated!";
+        Member result = getMemberById(id);
+
+        if (result != null) {
+            if (!inputValidation(name).equals("")) {
+                responseMessage = inputValidation(name);
+                return null;
+            } else {
+                result.setName(Validation.inputTrim(name));
+                result.setUpdatedAt(new Date());
+                memberRepository.save(result);
+                responseMessage = "Data successfully updated!";
+            }
         }
         return result;
     }
@@ -81,9 +86,10 @@ public class MemberService {
     // Metode untuk menghapus data anggota secara soft delete melalui repository
     public boolean deleteMember(Long id) {
         boolean result = false;
-        if (getMemberById(id) != null) {
-            getMemberById(id).setDeletedAt(new Date());
-            Member member = getMemberById(id);
+        Member member = getMemberById(id);
+
+        if (member != null) {
+            member.setDeletedAt(new Date());
             memberRepository.save(member);
             result = true;
             responseMessage = "Data successfully removed!";
@@ -94,12 +100,15 @@ public class MemberService {
     // Metode untuk memvalidasi inputan pengguna
     private String inputValidation(String name) {
         String result = "";
+
         if (Validation.inputCheck(Validation.inputTrim(name)) == 1) {
             result = "Sorry, member name cannot be blank.";
         }
+
         if (Validation.inputCheck(Validation.inputTrim(name)) == 2) {
             result = "Sorry, member name can only filled by letters";
         }
+
         return result;
     }
 }
