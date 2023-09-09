@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -55,14 +56,30 @@ public class OrderController {
         if (orders != null) httpStatus = HttpStatus.OK;
         else httpStatus = HttpStatus.BAD_REQUEST;
 
-        return  ResponseEntity.status(httpStatus).body(response);
+        return ResponseEntity.status(httpStatus).body(response);
     }
 
     @PostMapping("/{id}/products")
-        public  ResponseEntity<ApiResponse> addProductToOrder(@PathVariable("id") Long orderId, @RequestBody OrderDetail detail){
-        OrderDetail orderDetail = orderService.createOrderDetail(orderId, detail.getProduct().getId(), detail.getQty());
+    public ResponseEntity<ApiResponse> addProductToOrder(@PathVariable("id") Long orderId, @RequestBody OrderDetail detail) {
+        OrderDetail orderDetail = orderService.addProductToOrder(orderId, detail.getProduct().getId(), detail.getQty());
+        ApiResponse response = new ApiResponse(orderService.getResponseMessage(), orderDetail);
+        HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
 
-        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse(orderService.getResponseMessage(), orderDetail));
+        if (orderDetail != null) httpStatus = HttpStatus.OK;
+
+        return ResponseEntity.status(httpStatus).body(response);
+    }
+
+    @PatchMapping("/{orderId}/products/{productId}")
+    public ResponseEntity<ApiResponse> setProductDone(@PathVariable("orderId") Long orderId, @PathVariable("productId") Long productId) {
+        OrderDetail orderDetail = orderService.setOrderDetailDone(orderId, productId);
+        ApiResponse response = new ApiResponse(orderService.getResponseMessage(), orderDetail);
+        HttpStatus httpStatus;
+
+        if (orderDetail != null) httpStatus = HttpStatus.OK;
+        else httpStatus = HttpStatus.BAD_REQUEST;
+
+        return ResponseEntity.status(httpStatus).body(response);
     }
 
     // Metode untuk memperbarui informasi order dari fungsi yg telah dibuat di service
@@ -72,7 +89,7 @@ public class OrderController {
         ApiResponse response = new ApiResponse(orderService.getResponseMessage(), orders);
         HttpStatus httpStatus;
 
-        if (orders != null)  httpStatus = HttpStatus.OK;
+        if (orders != null) httpStatus = HttpStatus.OK;
         else httpStatus = HttpStatus.BAD_REQUEST;
 
         return ResponseEntity.status(httpStatus).body(response);

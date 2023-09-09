@@ -19,7 +19,8 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private Integer point;
+    @Column(columnDefinition = "INTEGER DEFAULT 0")
+    private int point;
 
     @JsonIgnore
     @OneToMany(mappedBy = "member")
@@ -58,7 +59,7 @@ public class Member {
         this.name = name;
     }
 
-    public Integer getPoint() {
+    public int getPoint() {
         return point;
     }
 
@@ -96,5 +97,9 @@ public class Member {
 
     public void setDeletedAt(Date deletedAt) {
         this.deletedAt = deletedAt;
+    }
+
+    public void addPoints(int point) {
+        this.point += point;
     }
 }
