@@ -51,7 +51,7 @@ public class TableService {
         } else {
             newTableOrder = new TableOrder(Validation.inputTrim(name));
             repository.save(newTableOrder);
-            responseMessage = "Data successfully added!";
+            responseMessage = "Data successfully added.";
         }
         return newTableOrder;
     }

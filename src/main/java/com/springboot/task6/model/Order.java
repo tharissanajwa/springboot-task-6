@@ -10,6 +10,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -33,12 +34,13 @@ public class Order {
     private TableOrder table;
     @OneToMany(mappedBy = "order")
     private List<OrderDetail> orderDetails;
-
-    @Column(name = "total_amount")
-    private Integer totalAmount;
+    @Column(name = "total_amount", columnDefinition = "INTEGER DEFAULT 0")
+    private int totalAmount;
     private String note;
-    @Column(name = " is_paid", columnDefinition = "boolean default false")
+    @Column(name = " is_paid", columnDefinition = "BOOLEAN DEFAULT FALSE")
     private boolean isPaid;
+    @Column(name = "point_obtained", columnDefinition = "INTEGER DEFAULT 0")
+    private int pointObtained;
     @OneToOne(mappedBy = "order")
     private Payment payment;
     @Column(name = "created_at", columnDefinition = "DATE DEFAULT CURRENT_DATE")
@@ -48,7 +50,6 @@ public class Order {
     @Column(name = "deleted_at", columnDefinition = "DATE DEFAULT NULL")
     private Date deletedAt;
 
-
     public Order() {
     }
 
@@ -56,13 +57,25 @@ public class Order {
         this.member = member;
         this.employee = employee;
         this.table = table;
+        this.orderDetails = new ArrayList<>();
+        this.note = "";
+        this.pointObtained = 0;
+    }
+
+    public Order(Employee employee, TableOrder table) {
+        this.member = null;
+        this.employee = employee;
+        this.table = table;
+        this.orderDetails = new ArrayList<>();
+        this.note = "";
+        this.pointObtained = 0;
     }
 
     public Long getId() {
         return this.id;
     }
 
-    public Integer getTotalAmount() {
+    public int getTotalAmount() {
         return this.totalAmount;
     }
 
@@ -70,15 +83,7 @@ public class Order {
         return this.note;
     }
 
-    public Boolean getIsPaid() {
-        return this.isPaid;
-    }
-
-    public void setIsPaid(Boolean isPaid) {
-        this.isPaid = isPaid;
-    }
-
-    public void setTotalAmount(Integer totalAmount) {
+    public void setTotalAmount(int totalAmount) {
         this.totalAmount = totalAmount;
     }
 
@@ -124,6 +129,30 @@ public class Order {
 
     public void setPayment(Payment payment) {
         this.payment = payment;
+    }
+
+    public boolean isPaid() {
+        return isPaid;
+    }
+
+    public void setIsPaid(boolean isPaid) {
+        isPaid = isPaid;
+    }
+
+    public int getPointObtained() {
+        return pointObtained;
+    }
+
+    public void setPointObtained(int pointObtained) {
+        this.pointObtained = pointObtained;
+    }
+
+    public void addOrderDetail(OrderDetail detail) {
+        this.orderDetails.add(detail);
+    }
+
+    public void addTotalAmount(int amount) {
+        this.totalAmount += amount;
     }
 
     public Date getCreatedAt() {

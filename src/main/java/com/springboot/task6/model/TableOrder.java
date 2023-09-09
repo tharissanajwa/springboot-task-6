@@ -1,6 +1,7 @@
 package com.springboot.task6.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -22,7 +23,8 @@ public class TableOrder {
     @JsonIgnore
     @OneToMany(mappedBy = "table")
     private List<Order> orders;
-    @Column(name = "is_available", columnDefinition = "BOOLEAN DEFAULT TRUE")
+    @Column(name = "is_available", nullable = false)
+    @ColumnDefault("true")
     private boolean isAvailable;
     @JsonIgnore
     @Column(name = "created_at", columnDefinition = "DATE DEFAULT CURRENT_DATE")
@@ -39,6 +41,7 @@ public class TableOrder {
 
     public TableOrder(String name) {
         this.name = name;
+        this.isAvailable = true;
     }
 
     public Long getId() {
@@ -50,7 +53,7 @@ public class TableOrder {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public void setName(String name) {
@@ -58,15 +61,15 @@ public class TableOrder {
     }
 
     public List<Order> getOrders() {
-        return orders;
+        return this.orders;
     }
 
     public boolean isAvailable() {
-        return isAvailable;
+        return this.isAvailable;
     }
 
     public void setAvailable(boolean available) {
-        isAvailable = available;
+        this.isAvailable = available;
     }
 
     public void setOrders(List<Order> orders) {
@@ -90,7 +93,7 @@ public class TableOrder {
     }
 
     public Date getDeletedAt() {
-        return deletedAt;
+        return this.deletedAt;
     }
 
     public void setDeletedAt(Date deletedAt) {

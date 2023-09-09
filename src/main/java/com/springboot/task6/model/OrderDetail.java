@@ -45,7 +45,7 @@ public class OrderDetail {
     public OrderDetail() {
     }
 
-    public OrderDetail(Order order, Product product, Integer quantity) {
+    public OrderDetail(Order order, Product product, int quantity) {
         this.order = order;
         this.product = product;
         this.qty = quantity;
