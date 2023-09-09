@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -70,9 +69,9 @@ public class OrderController {
         return ResponseEntity.status(httpStatus).body(response);
     }
 
-    @PatchMapping("/{orderId}/products/{productId}")
-    public ResponseEntity<ApiResponse> setProductDone(@PathVariable("orderId") Long orderId, @PathVariable("productId") Long productId) {
-        OrderDetail orderDetail = orderService.setOrderDetailDone(orderId, productId);
+    @PatchMapping("/{id}/products/{detailOrderId}")
+    public ResponseEntity<ApiResponse> setProductDone(@PathVariable("id") Long id, @PathVariable("detailOrderId") Long detailOrderId) {
+        OrderDetail orderDetail = orderService.setOrderDetailDone(id, detailOrderId);
         ApiResponse response = new ApiResponse(orderService.getResponseMessage(), orderDetail);
         HttpStatus httpStatus;
 
@@ -82,8 +81,20 @@ public class OrderController {
         return ResponseEntity.status(httpStatus).body(response);
     }
 
+    @DeleteMapping("/{id}/products/{detailOrderId}")
+    public ResponseEntity<ApiResponse> deleteOrderDetail(@PathVariable("id") Long id, @PathVariable("detailOrderId") Long detailOrderId) {
+        boolean orderDetail = orderService.deleteOrderDetail(id, detailOrderId);
+        ApiResponse response = new ApiResponse(orderService.getResponseMessage(), null);
+        HttpStatus httpStatus;
+
+        if (orderDetail) httpStatus = HttpStatus.OK;
+        else httpStatus = HttpStatus.BAD_REQUEST;
+
+        return ResponseEntity.status(httpStatus).body(response);
+    }
+
     // Metode untuk memperbarui informasi order dari fungsi yg telah dibuat di service
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<ApiResponse> updateOrder(@PathVariable("id") Long id, @RequestBody Order order) {
         Order orders = orderService.updateOrder(id, order.getNote());
         ApiResponse response = new ApiResponse(orderService.getResponseMessage(), orders);

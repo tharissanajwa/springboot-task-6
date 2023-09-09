@@ -50,7 +50,6 @@ public class Order {
     @Column(name = "deleted_at", columnDefinition = "DATE DEFAULT NULL")
     private Date deletedAt;
 
-
     public Order() {
     }
 
@@ -132,6 +131,30 @@ public class Order {
         this.payment = payment;
     }
 
+    public boolean isPaid() {
+        return isPaid;
+    }
+
+    public void setIsPaid(boolean isPaid) {
+        isPaid = isPaid;
+    }
+
+    public int getPointObtained() {
+        return pointObtained;
+    }
+
+    public void setPointObtained(int pointObtained) {
+        this.pointObtained = pointObtained;
+    }
+
+    public void addOrderDetail(OrderDetail detail) {
+        this.orderDetails.add(detail);
+    }
+
+    public void addTotalAmount(int amount) {
+        this.totalAmount += amount;
+    }
+
     public Date getCreatedAt() {
         return this.createdAt;
     }
@@ -154,29 +177,5 @@ public class Order {
 
     public void setDeletedAt(Date deletedAt) {
         this.deletedAt = deletedAt;
-    }
-
-    public boolean isPaid() {
-        return isPaid;
-    }
-
-    public void setPaid(boolean paid) {
-        isPaid = paid;
-    }
-
-    public int getPointObtained() {
-        return pointObtained;
-    }
-
-    public void setPointObtained(int pointObtained) {
-        this.pointObtained = pointObtained;
-    }
-
-    public void addOrderDetail(OrderDetail detail) {
-        this.orderDetails.add(detail);
-    }
-
-    public void addTotalAmount(int amount) {
-        this.totalAmount += amount;
     }
 }
