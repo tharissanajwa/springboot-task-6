@@ -102,4 +102,8 @@ public class Member {
     public void addPoints(int point) {
         this.point += point;
     }
+
+    public void minusPoints(int point) {
+        this.point -= point;
+    }
 }

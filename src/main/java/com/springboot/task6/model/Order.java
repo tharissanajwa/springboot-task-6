@@ -136,7 +136,7 @@ public class Order {
     }
 
     public void setIsPaid(boolean isPaid) {
-        isPaid = isPaid;
+        this.isPaid = isPaid;
     }
 
     public int getPointObtained() {
