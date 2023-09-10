@@ -1,5 +1,7 @@
 package com.springboot.task6.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -34,10 +36,9 @@ public class Payment {
     public Payment() {
     }
 
-    public Payment(Integer totalPaid, Integer discount, Integer change, Order order) {
+    public Payment(Integer totalPaid, Integer discount, Order order) {
         this.totalPaid = totalPaid;
         this.discount = discount;
-        this.change = change;
         this.order = order;
     }
 
@@ -57,10 +58,16 @@ public class Payment {
         return this.change;
     }
 
+    @JsonIgnore
     public Date getCreatedAt() {
         return this.createdAt;
     }
 
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    @JsonIgnore
     public Date getUpdatedAt() {
         return this.updatedAt;
     }
@@ -69,11 +76,33 @@ public class Payment {
         this.updatedAt = updatedAt;
     }
 
+    @JsonIgnore
     public Date getDeletedAt() {
         return this.deletedAt;
     }
 
     public void setDeletedAt(Date deletedAt) {
         this.deletedAt = deletedAt;
+    }
+
+    @JsonIgnore
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
+    public void setTotalPaid(Integer totalPaid) {
+        this.totalPaid = totalPaid;
+    }
+
+    public void setDiscount(Integer discount) {
+        this.discount = discount;
+    }
+
+    public void setChange(Integer change) {
+        this.change = change;
     }
 }

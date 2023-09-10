@@ -36,11 +36,11 @@ public class EmployeeController {
     public ResponseEntity<ApiResponse> getEmployeeById(@PathVariable("id") Long id) {
         Employee employees = employeeService.getEmployeeById(id);
         ApiResponse response = new ApiResponse(employeeService.getResponseMessage(), employees);
-        if (employees != null) {
-            return ResponseEntity.status(HttpStatus.OK).body(response);
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }
+        HttpStatus httpStatus;
+
+        if (employees != null) httpStatus = HttpStatus.OK;
+        else httpStatus = HttpStatus.BAD_REQUEST;
+        return ResponseEntity.status(httpStatus).body(response);
     }
 
     // Metode untuk membuat pegawai baru dari fungsi yg telah dibuat di service
@@ -48,11 +48,11 @@ public class EmployeeController {
     public ResponseEntity<ApiResponse> insertEmployee(@RequestBody Employee employee) {
         Employee employees = employeeService.insertEmployee(employee.getName());
         ApiResponse response = new ApiResponse(employeeService.getResponseMessage(), employees);
-        if (employees != null) {
-            return ResponseEntity.status(HttpStatus.OK).body(response);
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }
+        HttpStatus httpStatus;
+
+        if (employees != null) httpStatus = HttpStatus.OK;
+        else httpStatus = HttpStatus.BAD_REQUEST;
+        return ResponseEntity.status(httpStatus).body(response);
     }
 
     // Metode untuk memperbarui informasi pegawai dari fungsi yg telah dibuat di service
@@ -60,22 +60,22 @@ public class EmployeeController {
     public ResponseEntity<ApiResponse> updateEmployee(@PathVariable("id") Long id, @RequestBody Employee employee) {
         Employee employees = employeeService.updateEmployee(id, employee.getName());
         ApiResponse response = new ApiResponse(employeeService.getResponseMessage(), employees);
-        if (employees != null) {
-            return ResponseEntity.status(HttpStatus.OK).body(response);
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }
+        HttpStatus httpStatus;
+
+        if (employees != null) httpStatus = HttpStatus.OK;
+        else httpStatus = HttpStatus.BAD_REQUEST;
+        return ResponseEntity.status(httpStatus).body(response);
     }
 
     // Metode untuk menghapus pegawai berdasarkan dari fungsi yg telah dibuat di service
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse> deleteEmployee(@PathVariable("id") Long id) {
-        boolean valid = employeeService.deleteEmployee(id);
+        boolean employees = employeeService.deleteEmployee(id);
         ApiResponse response = new ApiResponse(employeeService.getResponseMessage(), null);
-        if (valid) {
-            return ResponseEntity.status(HttpStatus.OK).body(response);
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }
+        HttpStatus httpStatus;
+
+        if (employees) httpStatus = HttpStatus.OK;
+        else httpStatus = HttpStatus.BAD_REQUEST;
+        return ResponseEntity.status(httpStatus).body(response);
     }
 }
