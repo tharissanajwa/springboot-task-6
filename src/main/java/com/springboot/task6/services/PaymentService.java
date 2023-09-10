@@ -121,8 +121,25 @@ public class PaymentService {
     public boolean deletePayment(Long paymentId) {
         Payment payment = getPaymentById(paymentId);
         if (payment != null) {
-            payment.setDeletedAt(new Date());
-            paymentRepository.save(payment);
+            paymentRepository.deleteById(paymentId);
+
+            Order order = orderService.getOrderById(payment.getOrder().getId());
+            int point = order.getPointObtained();
+            if (order.getMember() != null) {
+                if (order.getPointObtained() <= 100) {
+                    order.getMember().minusPoints(point);
+                }
+                if (order.getMember().getPoint() > 100) {
+                    order.getMember().addPoints(point);
+                }
+            }
+
+            order.setIsPaid(false);
+            TableOrder tableOrder = order.getTable();
+            tableOrder.setAvailable(false);
+
+            orderRepository.save(order);
+
             responseMessage = "Payment deleted successfully.";
             return true;
         } else {
