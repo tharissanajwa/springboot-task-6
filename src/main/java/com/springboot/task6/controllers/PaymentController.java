@@ -37,7 +37,7 @@ public class PaymentController {
     }
 
     // Metode untuk membuat pembayaran baru dari fungsi yg telah dibuat di service
-    @PostMapping("/{orderId}")
+    @PostMapping("/orders/{orderId}")
     public ResponseEntity<ApiResponse> insertPayment(@PathVariable("orderId") Long orderId, @RequestBody Payment payment) {
         Payment payments = paymentService.insertPayment(payment.getTotalPaid(), orderId);
         ApiResponse response = new ApiResponse(paymentService.getResponseMessage(), payments);
@@ -49,7 +49,7 @@ public class PaymentController {
     }
 
     // Metode untuk mengubah pembayaran dari fungsi yg telah dibuat di service
-    @PutMapping("/{orderId}")
+    @PutMapping("/orders/{orderId}")
     public ResponseEntity<ApiResponse> updatePayment(@PathVariable("orderId") Long orderId, @RequestBody Payment payment) {
         Payment payments = paymentService.updatePayment(payment.getTotalPaid(), orderId);
         ApiResponse response = new ApiResponse(paymentService.getResponseMessage(), payments);
