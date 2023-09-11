@@ -1,6 +1,5 @@
 package com.springboot.task6.services;
 
-import com.springboot.task6.model.Product;
 import com.springboot.task6.model.TableOrder;
 import com.springboot.task6.repositories.TableRepository;
 import com.springboot.task6.utilities.Validation;
@@ -103,31 +102,21 @@ public class TableService {
         return result;
     }
 
-    // Metode untuk menambahkan sample awal
-    private void seedData() {
-        TableOrder tableOrder1 = new TableOrder();
-        tableOrder1.setName("A1");
-        tableOrder1.setCreatedAt(new Date());
+    public void seedData() {
+        // database seeder
+        TableOrder tableOrder1 = new TableOrder("A1");
         repository.save(tableOrder1);
 
-        TableOrder tableOrder2 = new TableOrder();
-        tableOrder2.setName("A2");
-        tableOrder2.setCreatedAt(new Date());
+        TableOrder tableOrder2 = new TableOrder("A2");
         repository.save(tableOrder2);
 
-        TableOrder tableOrder3 = new TableOrder();
-        tableOrder3.setName("A3");
-        tableOrder3.setCreatedAt(new Date());
+        TableOrder tableOrder3 = new TableOrder("A3");
         repository.save(tableOrder3);
 
-        TableOrder tableOrder4 = new TableOrder();
-        tableOrder4.setName("A4");
-        tableOrder4.setCreatedAt(new Date());
+        TableOrder tableOrder4 = new TableOrder("A4");
         repository.save(tableOrder4);
 
-        TableOrder tableOrder5 = new TableOrder();
-        tableOrder5.setName("A5");
-        tableOrder5.setCreatedAt(new Date());
+        TableOrder tableOrder5 = new TableOrder("A5");
         repository.save(tableOrder5);
     }
 }

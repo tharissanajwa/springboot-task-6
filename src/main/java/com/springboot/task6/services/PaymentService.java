@@ -59,15 +59,7 @@ public class PaymentService {
             return null;
         } else {
             Order order = orderService.getOrderById(orderId);
-            int point = order.getPointObtained();
-            int discount = 0;
-            if (order.getMember() != null) {
-                order.getMember().addPoints(point);
-                if (order.getMember().getPoint() > 100) {
-                    discount = point * 100;
-                    order.getMember().minusPoints(point);
-                }
-            }
+            Integer discount = calculateDiscount(orderId);
             Integer change = calculateChange(totalPaid, order.getTotalAmount(), discount);
             if (change == null) {
                 return null;
@@ -83,7 +75,6 @@ public class PaymentService {
                 order.setIsPaid(true);
                 TableOrder tableOrder = order.getTable();
                 tableOrder.setAvailable(true);
-
                 orderRepository.save(order);
 
                 responseMessage = "Payment successfully added!";
@@ -99,13 +90,7 @@ public class PaymentService {
             responseMessage = "Sorry, order is not found.";
             return null;
         } else {
-            int point = order.getPointObtained();
-            int discount = 0;
-            if (order.getMember() != null) {
-                if (order.getMember().getPoint() > 100) {
-                    discount = point * 100;
-                }
-            }
+            Integer discount = calculateDiscount(orderId);
             Integer change = calculateChange(totalPaid, order.getTotalAmount(), discount);
             if (change == null) {
                 return null;
@@ -129,8 +114,6 @@ public class PaymentService {
     public boolean deletePayment(Long paymentId) {
         Payment payment = getPaymentById(paymentId);
         if (payment != null) {
-            paymentRepository.deleteById(paymentId);
-
             Order order = orderService.getOrderById(payment.getOrder().getId());
             int point = order.getPointObtained();
             if (order.getMember() != null) {
@@ -147,6 +130,7 @@ public class PaymentService {
             tableOrder.setAvailable(false);
 
             orderRepository.save(order);
+            paymentRepository.deleteById(paymentId);
 
             responseMessage = "Payment deleted successfully.";
             return true;
@@ -154,18 +138,6 @@ public class PaymentService {
             responseMessage = "Payment not found.";
             return false;
         }
-    }
-
-    // Metode untuk menghitung kembalian dari total yang sudah dibayarkan
-    private Integer calculateChange(Integer totalPaid, Integer totalAmount, Integer discount) {
-        Integer result = null;
-        int totals = totalAmount - discount;
-        if (totalPaid < totals) {
-            responseMessage = "Sorry, the total paid must exceed the total amount.";
-        } else {
-            result = totalPaid - totals;
-        }
-        return result;
     }
 
     // Metode untuk validasi pembayaran
@@ -187,7 +159,36 @@ public class PaymentService {
                 result = "Payment cannot be made because the order has been paid.";
             } else if (!isDone) {
                 result =  "Payment cannot be made because not all order details are done.";
+            } else {
+
             }
+        }
+        return result;
+    }
+
+    // Metode untuk menghitung diskon dari point member yang tersedia untuk insert payment
+    private Integer calculateDiscount(Long orderId) {
+        Order order = orderService.getOrderById(orderId);
+        int discount = 0;
+        int point = order.getPointObtained();
+        if (order.getMember() != null) {
+            order.getMember().addPoints(point);
+            if (order.getMember().getPoint() > 100) {
+                discount = point * 100;
+                order.getMember().minusPoints(point);
+            }
+        }
+        return discount;
+    }
+
+    // Metode untuk menghitung kembalian dari total yang sudah dibayarkan
+    private Integer calculateChange(Integer totalPaid, Integer totalAmount, Integer discount) {
+        Integer result = null;
+        int totals = totalAmount - discount;
+        if (totalPaid < totals) {
+            responseMessage = "Sorry, the total paid must exceed the total amount.";
+        } else {
+            result = totalPaid - totals;
         }
         return result;
     }
