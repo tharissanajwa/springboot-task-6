@@ -29,7 +29,7 @@ public class OrderDetail {
     private Product product;
 
     @Column(name = "is_done", columnDefinition = "BOOLEAN DEFAULT FALSE")
-    private boolean isDone;
+    private boolean isDone; // Status pesanan
     private int qty;
 
     @JsonIgnore
