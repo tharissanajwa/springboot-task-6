@@ -42,6 +42,7 @@ public class Product {
     public Product(String name, Integer price) {
         this.name = name;
         this.price = price;
+        this.createdAt = new Date();
     }
 
     public Long getId() {
