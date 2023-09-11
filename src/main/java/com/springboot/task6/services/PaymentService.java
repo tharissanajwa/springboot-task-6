@@ -31,6 +31,7 @@ public class PaymentService {
         return responseMessage;
     }
 
+    // Metode untuk mengambil semua data pembayaran
     public List<Payment> getAllPayment() {
         if (paymentRepository.findAllByDeletedAtIsNull().isEmpty()) {
             responseMessage = "Data doesn't exists, please insert new data payment.";
@@ -40,6 +41,7 @@ public class PaymentService {
         return paymentRepository.findAllByDeletedAtIsNull();
     }
 
+    // Metode untuk mengambil data pembayaran berdasarkan id
     public Payment getPaymentById(Long id) {
         Optional<Payment> result = paymentRepository.findByIdAndDeletedAtIsNull(id);
         if (result.isPresent()) {
@@ -50,6 +52,7 @@ public class PaymentService {
         return null;
     }
 
+    // Metode untuk membuat pembayaran baru
     public Payment insertPayment(Integer totalPaid, Long orderId) {
         if (!isPaymentValid(orderId).isEmpty()) {
             responseMessage = isPaymentValid(orderId);
@@ -89,6 +92,7 @@ public class PaymentService {
         }
     }
 
+    // Metode untuk mengubah pembayaran
     public Payment updatePayment(Integer totalPaid, Long orderId) {
         Order order = orderService.getOrderById(orderId);
         if (order == null) {
@@ -121,6 +125,7 @@ public class PaymentService {
         }
     }
 
+    // Metode untuk menghapus pembayaran
     public boolean deletePayment(Long paymentId) {
         Payment payment = getPaymentById(paymentId);
         if (payment != null) {
@@ -151,7 +156,8 @@ public class PaymentService {
         }
     }
 
-    public Integer calculateChange(Integer totalPaid, Integer totalAmount, Integer discount) {
+    // Metode untuk menghitung kembalian dari total yang sudah dibayarkan
+    private Integer calculateChange(Integer totalPaid, Integer totalAmount, Integer discount) {
         Integer result = null;
         int totals = totalAmount - discount;
         if (totalPaid < totals) {
@@ -162,6 +168,7 @@ public class PaymentService {
         return result;
     }
 
+    // Metode untuk validasi pembayaran
     private String isPaymentValid(Long orderId) {
         String result = "";
         Order order = orderService.getOrderById(orderId);

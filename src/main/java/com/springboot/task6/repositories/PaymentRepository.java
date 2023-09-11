@@ -8,6 +8,5 @@ import java.util.Optional;
 
 public interface PaymentRepository extends JpaRepository<Payment, Long> {
     List<Payment> findAllByDeletedAtIsNull();
-
     Optional<Payment> findByIdAndDeletedAtIsNull(Long id);
 }

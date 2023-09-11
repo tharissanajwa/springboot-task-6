@@ -33,7 +33,6 @@ public class PaymentController {
 
         if (payments != null) httpStatus = HttpStatus.OK;
         else httpStatus = HttpStatus.BAD_REQUEST;
-
         return ResponseEntity.status(httpStatus).body(response);
     }
 
@@ -46,11 +45,10 @@ public class PaymentController {
 
         if (payments != null) httpStatus = HttpStatus.OK;
         else httpStatus = HttpStatus.BAD_REQUEST;
-
         return  ResponseEntity.status(httpStatus).body(response);
     }
 
-    // Metode untuk membuat pembayaran baru dari fungsi yg telah dibuat di service
+    // Metode untuk mengubah pembayaran dari fungsi yg telah dibuat di service
     @PutMapping("/{orderId}")
     public ResponseEntity<ApiResponse> updatePayment(@PathVariable("orderId") Long orderId, @RequestBody Payment payment) {
         Payment payments = paymentService.updatePayment(payment.getTotalPaid(), orderId);
@@ -59,11 +57,10 @@ public class PaymentController {
 
         if (payments != null) httpStatus = HttpStatus.OK;
         else httpStatus = HttpStatus.BAD_REQUEST;
-
         return  ResponseEntity.status(httpStatus).body(response);
     }
 
-    // Metode untuk menghapus pembayaran berdasarkan dari fungsi yg telah dibuat di service
+    // Metode untuk menghapus pembayaran berdasarkan id payment dari fungsi yg telah dibuat di service
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse> deletePayment(@PathVariable("id") Long id) {
         boolean isValid = paymentService.deletePayment(id);
@@ -72,7 +69,6 @@ public class PaymentController {
 
         if (isValid) httpStatus = HttpStatus.OK;
         else httpStatus = HttpStatus.BAD_REQUEST;
-
         return ResponseEntity.status(httpStatus).body(response);
     }
 }
