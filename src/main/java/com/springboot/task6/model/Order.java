@@ -40,7 +40,7 @@ public class Order {
     @Column(name = " is_paid", columnDefinition = "BOOLEAN DEFAULT FALSE")
     private boolean isPaid;
     @Column(name = "point_obtained", columnDefinition = "INTEGER DEFAULT 0")
-    private int pointObtained;
+    private int pointObtained; // Poin yang akan didapatkan member
     @OneToOne(mappedBy = "order")
     private Payment payment;
     @Column(name = "created_at", columnDefinition = "DATE DEFAULT CURRENT_DATE")

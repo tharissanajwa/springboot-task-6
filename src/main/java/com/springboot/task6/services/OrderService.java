@@ -6,7 +6,6 @@ import com.springboot.task6.model.Order;
 import com.springboot.task6.model.OrderDetail;
 import com.springboot.task6.model.Product;
 import com.springboot.task6.model.TableOrder;
-import com.springboot.task6.repositories.MemberRepository;
 import com.springboot.task6.repositories.OrderDetailRepository;
 import com.springboot.task6.repositories.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +19,6 @@ import java.util.Optional;
 public class OrderService {
     @Autowired
     private OrderRepository orderRepository;
-
-    @Autowired
-    private MemberRepository memberRepository;
 
     @Autowired
     private OrderDetailRepository orderDetailRepository;
@@ -79,23 +75,16 @@ public class OrderService {
             Employee employee = employeeService.getEmployeeById(employeeId);
             TableOrder tableOrder = tableService.getTableOrderById(tableId);
 
-            if (employee == null) {
-                responseMessage = "Employee cannot be empty.";
-            } else if (tableOrder == null) {
-                responseMessage = "Table cannot be empty.";
-            } else {
-                if (member == null) result = new Order(employee, tableOrder);
-                else result = new Order(member, employee, tableOrder);
+            if (member == null) result = new Order(employee, tableOrder);
+            else result = new Order(member, employee, tableOrder);
 
-                tableService.getTableOrderById(tableId).setAvailable(false);
-                result.setCreatedAt(new Date());
-                orderRepository.save(result);
-                responseMessage = "Data successfully added!";
-            }
+            tableService.getTableOrderById(tableId).setAvailable(false);
+            result.setCreatedAt(new Date());
+            orderRepository.save(result);
+            responseMessage = "Data successfully added!";
         } else {
             responseMessage = inputValidation(tableId, memberId, employeeId);
         }
-
         return result;
     }
 
@@ -127,6 +116,7 @@ public class OrderService {
         return result;
     }
 
+    // Metode untuk menambahkan product(detail order) kedalam order berdasarkan id yg diinputkan
     public OrderDetail addProductToOrder(Long orderId, Long productId, int qty) {
         OrderDetail result = null;
         Order order = getOrderById(orderId);
@@ -162,6 +152,7 @@ public class OrderService {
         return result;
     }
 
+    // Metode untuk mengubah status product(detail order) menjadi done berdasarkan id detail order yg diinputkan
     public OrderDetail setOrderDetailDone(Long orderId, Long detailOrderId) {
         OrderDetail orderDetail = getOrderDetailById(orderId, detailOrderId);
 
@@ -174,6 +165,7 @@ public class OrderService {
         return orderDetail;
     }
 
+    // Metode untuk menghapus product(detail order) berdasarkan id detail order yg diinputkan
     public boolean deleteOrderDetail(Long orderId, Long detailOrderId) {
         boolean result = true;
         OrderDetail orderDetail = getOrderDetailById(orderId, detailOrderId);
@@ -222,6 +214,7 @@ public class OrderService {
         return result;
     }
 
+    // Metode untuk menghitung total pesanan yang harus dibayarkan
     private int accumulateTotalAmount(Order order) {
         int total = 0;
 
@@ -235,6 +228,7 @@ public class OrderService {
         return total;
     }
 
+    // Metode untuk menghitung total point yang didapatkan member
     private int accumulatePoints(OrderDetail orderDetail) {
         int pointFromOrder = orderDetail.getOrder().getPointObtained();
         int productTotalPrice = orderDetail.getProduct().getPrice() * orderDetail.getQty();
@@ -245,6 +239,7 @@ public class OrderService {
         return pointFromOrder;
     }
 
+    // Metode untuk mendapatkan detail order berdasarkan orderId dan detailOrderId
     private OrderDetail getOrderDetailById(Long orderId, Long detailOrderId) {
         OrderDetail orderDetail = null;
         List<OrderDetail> orderDetails = orderDetailRepository.getOrderDetailsByOrderIdAndDeletedAtIsNull(orderId);

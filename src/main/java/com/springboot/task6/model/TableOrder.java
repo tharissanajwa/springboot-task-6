@@ -25,7 +25,7 @@ public class TableOrder {
     private List<Order> orders;
     @Column(name = "is_available", nullable = false)
     @ColumnDefault("true")
-    private boolean isAvailable;
+    private boolean isAvailable; // Status meja tersedia atau tidak
     @JsonIgnore
     @Column(name = "created_at", columnDefinition = "DATE DEFAULT CURRENT_DATE")
     private Date createdAt;

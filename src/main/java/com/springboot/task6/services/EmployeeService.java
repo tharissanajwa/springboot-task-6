@@ -101,8 +101,8 @@ public class EmployeeService {
         return result;
     }
 
-    public void seedData() {
-        // database seeder
+    // Metode untuk menambahkan sample awal
+    private void seedData() {
         Employee employee1 = new Employee();
         employee1.setName("Ahmad Budi Santoso");
         employee1.setCreatedAt(new Date());

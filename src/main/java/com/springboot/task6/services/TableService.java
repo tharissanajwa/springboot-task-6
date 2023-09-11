@@ -103,8 +103,8 @@ public class TableService {
         return result;
     }
 
-    public void seedData() {
-        // database seeder
+    // Metode untuk menambahkan sample awal
+    private void seedData() {
         TableOrder tableOrder1 = new TableOrder();
         tableOrder1.setName("A1");
         tableOrder1.setCreatedAt(new Date());

@@ -23,6 +23,7 @@ public class TableController {
     @Autowired
     private TableService service;
 
+    // Metode untuk mengambil semua data meja dari fungsi yg telah dibuat di service
     @GetMapping("")
     public ResponseEntity<ApiResponse> getAllTable() {
         List<TableOrder> tables = service.getTableOrders();
@@ -30,6 +31,7 @@ public class TableController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    // Metode untuk mengambil data meja berdasarkan id dari fungsi yg telah dibuat di service
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse> getTableById(@PathVariable("id") Long id) {
         TableOrder tableOrder = service.getTableOrderById(id);
@@ -38,10 +40,10 @@ public class TableController {
 
         if (tableOrder != null) httpStatus = HttpStatus.OK;
         else httpStatus = HttpStatus.BAD_REQUEST;
-
         return ResponseEntity.status(httpStatus).body(response);
     }
 
+    // Metode untuk membuat meja baru dari fungsi yg telah dibuat di service
     @PostMapping
     public ResponseEntity<ApiResponse> insertTableOrder(@RequestBody TableOrder tableOrder) {
         TableOrder table = service.inserTableOrder(tableOrder.getName());
@@ -50,10 +52,10 @@ public class TableController {
 
         if (table != null) httpStatus = HttpStatus.OK;
         else httpStatus = HttpStatus.BAD_REQUEST;
-
         return ResponseEntity.status(httpStatus).body(response);
     }
 
+    // Metode untuk memperbarui informasi meja dari fungsi yg telah dibuat di service
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse> updateTableOrder(@PathVariable("id") Long id, @RequestBody TableOrder tableOrder) {
         TableOrder table = service.updateTableOrder(id, tableOrder.getName());
@@ -62,10 +64,10 @@ public class TableController {
 
         if (table != null) httpStatus = HttpStatus.OK;
         else httpStatus = HttpStatus.BAD_REQUEST;
-
         return ResponseEntity.status(httpStatus).body(response);
     }
 
+    // Metode untuk menghapus meja berdasarkan dari fungsi yg telah dibuat di service
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse> deleteTableOrder(@PathVariable("id") Long id) {
         boolean isValid = service.deleteTableOrder(id);
@@ -74,7 +76,6 @@ public class TableController {
 
         if (isValid) httpStatus = HttpStatus.OK;
         else httpStatus = HttpStatus.BAD_REQUEST;
-
         return ResponseEntity.status(httpStatus).body(response);
     }
 }
