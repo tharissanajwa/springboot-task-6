@@ -68,6 +68,9 @@ public class PaymentService {
             Integer change = calculateChange(totalPaid, order.getTotalAmount(), discount);
             if (change == null) {
                 return null;
+            } else if (order.getOrderDetails().isEmpty()) {
+                responseMessage = "Sorry, order with ID " + orderId + " doesn't have any product yet.";
+                return null;
             } else {
                 Payment result = new Payment(totalPaid, discount, order);
                 result.setChange(change);
