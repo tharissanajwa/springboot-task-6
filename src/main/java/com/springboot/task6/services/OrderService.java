@@ -106,13 +106,13 @@ public class OrderService {
         boolean result = false;
         Order order = getOrderById(id);
 
-        if (!order.isPaid() && !order.getOrderDetails().isEmpty()) {
+        if (validateDeleteOrder(order).isEmpty()) {
             order.setDeletedAt(new Date());
             orderRepository.save(order);
             result = true;
-            responseMessage = "Data successfully removed.";
+            responseMessage = "order successfully deleted.";
         } else {
-            responseMessage = "Sorry, payment can't be made.";
+           responseMessage =  validateDeleteOrder(order);
         }
 
         return result;
@@ -216,6 +216,19 @@ public class OrderService {
         return result;
     }
 
+    // Metode untuk validasi delete order
+    private String validateDeleteOrder (Order order) {
+        String message = "";
+        if (order == null) {
+            message = "Sorry Order is Not Found.";
+        } else if (order.isPaid()) {
+            message = "Sorry, data can't be deleted because order has been paid.";
+        } else if (!order.getOrderDetails().isEmpty()) {
+            message = "Sorry, can't remove your order because there is products in order with ID 1.";
+        }
+        return message;
+    }
+
     // Metode untuk menghitung total pesanan yang harus dibayarkan
     private int accumulateTotalAmount(Order order) {
         int total = 0;
@@ -246,10 +259,13 @@ public class OrderService {
         OrderDetail orderDetail = null;
         List<OrderDetail> orderDetails = orderDetailRepository.getOrderDetailsByOrderIdAndDeletedAtIsNull(orderId);
         int i = 0;
-
+        System.out.println("order id from param: " + orderId);
+        System.out.println("order detail id from param: " + detailOrderId);
         while (i < orderDetails.size()) {
             OrderDetail orderDetailFromLoop = orderDetails.get(i);
             Order order = orderDetailFromLoop.getOrder();
+            System.out.println("order detail from loop: " + orderDetailFromLoop.getId());
+            System.out.println("order from order detail loop: " + order.getId());
 
             if (order.getId().equals(orderId) && orderDetailFromLoop.getId().equals(detailOrderId)) {
                 orderDetail = orderDetailFromLoop;
@@ -258,7 +274,7 @@ public class OrderService {
         }
 
         if (orderDetail == null) {
-            responseMessage = "Sorry, order with ID " + orderId + " doesn't have any product yet.";
+            responseMessage = "Sorry, order detail with ID " + detailOrderId + " not found on order id " + orderId + ".";
         }
 
         return orderDetail;

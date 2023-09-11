@@ -81,7 +81,7 @@ public class OrderController {
     }
 
     // Metode untuk menambahkan product(detail order) kedalam order berdasarkan id yg diinputkan
-    @PostMapping("/{id}/products")
+    @PostMapping("/{id}/details")
     public ResponseEntity<ApiResponse> addProductToOrder(@PathVariable("id") Long orderId, @RequestBody OrderDetail detail) {
         OrderDetail orderDetail = orderService.addProductToOrder(orderId, detail.getProduct().getId(), detail.getQty());
         ApiResponse response = new ApiResponse(orderService.getResponseMessage(), orderDetail);
@@ -93,7 +93,7 @@ public class OrderController {
     }
 
     // Metode untuk mengubah status product(detail order) menjadi done berdasarkan id detail order yg diinputkan
-    @PatchMapping("/{id}/products/{detailOrderId}")
+    @PatchMapping("/{id}/details/{detailOrderId}")
     public ResponseEntity<ApiResponse> setProductDone(@PathVariable("id") Long id, @PathVariable("detailOrderId") Long detailOrderId) {
         OrderDetail orderDetail = orderService.setOrderDetailDone(id, detailOrderId);
         ApiResponse response = new ApiResponse(orderService.getResponseMessage(), orderDetail);
@@ -105,7 +105,7 @@ public class OrderController {
     }
 
     // Metode untuk menghapus product(detail order) berdasarkan id detail order yg diinputkan
-    @DeleteMapping("/{id}/products/{detailOrderId}")
+    @DeleteMapping("/{id}/details/{detailOrderId}")
     public ResponseEntity<ApiResponse> deleteOrderDetail(@PathVariable("id") Long id, @PathVariable("detailOrderId") Long detailOrderId) {
         boolean orderDetail = orderService.deleteOrderDetail(id, detailOrderId);
         ApiResponse response = new ApiResponse(orderService.getResponseMessage(), null);
