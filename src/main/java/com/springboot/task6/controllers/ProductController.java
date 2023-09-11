@@ -26,8 +26,8 @@ public class ProductController {
     // Metode untuk mengambil semua data barang dari fungsi yg telah dibuat di service
     @GetMapping("")
     public ResponseEntity<ApiResponse> getAllProduct() {
-        List<Product> employees = productService.getAllProduct();
-        ApiResponse response = new ApiResponse(productService.getResponseMessage(), employees);
+        List<Product> products = productService.getAllProduct();
+        ApiResponse response = new ApiResponse(productService.getResponseMessage(), products);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

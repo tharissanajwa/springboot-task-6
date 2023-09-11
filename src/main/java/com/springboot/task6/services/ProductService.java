@@ -108,10 +108,10 @@ public class ProductService {
     private String inputValidation(String name) {
         String result = "";
         if (Validation.inputCheck(Validation.inputTrim(name)) == 1) {
-            result = "Sorry, member name cannot be blank.";
+            result = "Sorry, product name cannot be blank.";
         }
         if (Validation.inputCheck(Validation.inputTrim(name)) == 2) {
-            result = "Sorry, member name can only filled by letters";
+            result = "Sorry, product name can only filled by letters";
         }
         return result;
     }
@@ -119,7 +119,7 @@ public class ProductService {
     // Metode untuk memvalidasi inputan pengguna untuk harga (price)
     private String inputValidationPrice(Integer price) {
         String result = "";
-        if ( price <= 0) {
+        if (price <= 0) {
             result = "Sorry, price must be more than 0.";
         }
         return result;
