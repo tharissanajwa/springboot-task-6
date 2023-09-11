@@ -106,11 +106,13 @@ public class OrderService {
         boolean result = false;
         Order order = getOrderById(id);
 
-        if (order != null) {
+        if (validateDeleteOrder(order).isEmpty()) {
             order.setDeletedAt(new Date());
             orderRepository.save(order);
             result = true;
-            responseMessage = "Data successfully removed.";
+            responseMessage = "order successfully deleted.";
+        } else {
+           responseMessage =  validateDeleteOrder(order);
         }
 
         return result;
@@ -205,6 +207,18 @@ public class OrderService {
         return result;
     }
 
+    // Metode untuk validasi delete order
+    private String validateDeleteOrder (Order order) {
+        String message = "";
+        if (order == null) {
+            message = "Sorry Order is Not Found.";
+        } else if (order.isPaid()) {
+            message = "Sorry, data can't be deleted because order has been paid.";
+        } else if (!order.getOrderDetails().isEmpty()) {
+            message = "Sorry, can't remove your order because there is products in order with ID 1.";
+        }
+        return message;
+    }
     private String validateOrderDetailData(Long orderId, Long productId, int qty) {
         String message = "";
         Order order = getOrderById(orderId);
