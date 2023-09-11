@@ -1,5 +1,6 @@
 package com.springboot.task6.services;
 
+import com.springboot.task6.model.Employee;
 import com.springboot.task6.model.Member;
 import com.springboot.task6.repositories.MemberRepository;
 import com.springboot.task6.utilities.Validation;
@@ -29,7 +30,8 @@ public class MemberService {
     // Metode untuk mendapatkan semua daftar anggota yang belum terhapus melalui repository
     public List<Member> getAllMember() {
         if (memberRepository.findAllByDeletedAtIsNull().isEmpty()) {
-            responseMessage = "Data doesn't exists, please insert new data member.";
+            responseMessage = "Data successfully loaded.";
+            seedData();
         } else {
             responseMessage = "Data successfully loaded.";
         }
@@ -101,5 +103,33 @@ public class MemberService {
             result = "Sorry, member name can only filled by letters";
         }
         return result;
+    }
+
+    public void seedData() {
+        // database seeder
+        Member member1 = new Member();
+        member1.setName("Sarah Utami");
+        member1.setCreatedAt(new Date());
+        memberRepository.save(member1);
+
+        Member member2 = new Member();
+        member2.setName("Hasan Abdullah");
+        member2.setCreatedAt(new Date());
+        memberRepository.save(member2);
+
+        Member member3 = new Member();
+        member3.setName("Rina Kartika");
+        member3.setCreatedAt(new Date());
+        memberRepository.save(member3);
+
+        Member member4 = new Member();
+        member4.setName("Budi Setiawan");
+        member4.setCreatedAt(new Date());
+        memberRepository.save(member4);
+
+        Member member5 = new Member();
+        member5.setName("Maya Wijaya");
+        member5.setCreatedAt(new Date());
+        memberRepository.save(member5);
     }
 }
