@@ -25,7 +25,8 @@ public class EmployeeService {
     // Metode untuk mendapatkan semua daftar pegawai yang belum terhapus melalui repository
     public List<Employee> getAllEmployee() {
         if (employeeRepository.findAllByDeletedAtIsNull().isEmpty()) {
-            responseMessage = "Data doesn't exists, please insert new data employee.";
+            responseMessage = "Data successfully loaded.";
+            seedData();
         } else {
             responseMessage = "Data successfully loaded.";
         }
@@ -98,5 +99,33 @@ public class EmployeeService {
             result = "Sorry, employee name can only filled by letters";
         }
         return result;
+    }
+
+    public void seedData() {
+        // database seeder
+        Employee employee1 = new Employee();
+        employee1.setName("Ahmad Budi Santoso");
+        employee1.setCreatedAt(new Date());
+        employeeRepository.save(employee1);
+
+        Employee employee2 = new Employee();
+        employee2.setName("Maria Dewi Suryani");
+        employee2.setCreatedAt(new Date());
+        employeeRepository.save(employee2);
+
+        Employee employee3 = new Employee();
+        employee3.setName("Rizky Pratama Putra");
+        employee3.setCreatedAt(new Date());
+        employeeRepository.save(employee3);
+
+        Employee employee4 = new Employee();
+        employee4.setName("Siti Aisyah Rahman");
+        employee4.setCreatedAt(new Date());
+        employeeRepository.save(employee4);
+
+        Employee employee5 = new Employee();
+        employee5.setName("Fajar Hidayatullah");
+        employee5.setCreatedAt(new Date());
+        employeeRepository.save(employee5);
     }
 }

@@ -1,5 +1,6 @@
 package com.springboot.task6.services;
 
+import com.springboot.task6.model.Product;
 import com.springboot.task6.model.TableOrder;
 import com.springboot.task6.repositories.TableRepository;
 import com.springboot.task6.utilities.Validation;
@@ -25,8 +26,12 @@ public class TableService {
     public List<TableOrder> getTableOrders() {
         List<TableOrder> result = repository.findAllByDeletedAtIsNull();
 
-        if (result.isEmpty()) responseMessage = "Data doesn't exists, please insert new data table.";
-        else responseMessage = "Data successfully loaded.";
+        if (result.isEmpty()) {
+            responseMessage = "Data successfully loaded.";
+            seedData();
+        } else {
+            responseMessage = "Data successfully loaded.";
+        }
 
         return result;
     }
@@ -96,5 +101,33 @@ public class TableService {
         }
 
         return result;
+    }
+
+    public void seedData() {
+        // database seeder
+        TableOrder tableOrder1 = new TableOrder();
+        tableOrder1.setName("A1");
+        tableOrder1.setCreatedAt(new Date());
+        repository.save(tableOrder1);
+
+        TableOrder tableOrder2 = new TableOrder();
+        tableOrder2.setName("A2");
+        tableOrder2.setCreatedAt(new Date());
+        repository.save(tableOrder2);
+
+        TableOrder tableOrder3 = new TableOrder();
+        tableOrder3.setName("A3");
+        tableOrder3.setCreatedAt(new Date());
+        repository.save(tableOrder3);
+
+        TableOrder tableOrder4 = new TableOrder();
+        tableOrder4.setName("A4");
+        tableOrder4.setCreatedAt(new Date());
+        repository.save(tableOrder4);
+
+        TableOrder tableOrder5 = new TableOrder();
+        tableOrder5.setName("A5");
+        tableOrder5.setCreatedAt(new Date());
+        repository.save(tableOrder5);
     }
 }

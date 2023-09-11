@@ -1,5 +1,6 @@
 package com.springboot.task6.services;
 
+import com.springboot.task6.model.Employee;
 import com.springboot.task6.model.Product;
 import com.springboot.task6.repositories.ProductRepository;
 import com.springboot.task6.utilities.Validation;
@@ -29,7 +30,8 @@ public class ProductService {
     // Metode untuk mendapatkan semua daftar barang yang belum terhapus melalui repository
     public List<Product> getAllProduct() {
         if (productRepository.findAllByDeletedAtIsNull().isEmpty()) {
-            responseMessage = "Data doesn't exists, please insert new data Product.";
+            responseMessage = "Data successfully loaded.";
+            seedData();
         } else {
             responseMessage = "Data successfully loaded.";
         }
@@ -123,5 +125,38 @@ public class ProductService {
             result = "Sorry, price must be more than 0.";
         }
         return result;
+    }
+
+    public void seedData() {
+        // database seeder
+        Product product1 = new Product();
+        product1.setName("Nasi Timbel Sunda");
+        product1.setPrice(40_000);
+        product1.setCreatedAt(new Date());
+        productRepository.save(product1);
+
+        Product product2 = new Product();
+        product2.setName("Sate Maranggi");
+        product2.setPrice(30_000);
+        product2.setCreatedAt(new Date());
+        productRepository.save(product2);
+
+        Product product3 = new Product();
+        product3.setName("Pepes Ikan Mujair");
+        product3.setPrice(45_000);
+        product3.setCreatedAt(new Date());
+        productRepository.save(product3);
+
+        Product product4 = new Product();
+        product4.setName("Terong Bacem");
+        product4.setPrice(20_000);
+        product4.setCreatedAt(new Date());
+        productRepository.save(product4);
+
+        Product product5 = new Product();
+        product5.setName("Karedok");
+        product5.setPrice(25_000);
+        product5.setCreatedAt(new Date());
+        productRepository.save(product5);
     }
 }
