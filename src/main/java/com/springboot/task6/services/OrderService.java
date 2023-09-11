@@ -112,7 +112,7 @@ public class OrderService {
             result = true;
             responseMessage = "order successfully deleted.";
         } else {
-           responseMessage =  validateDeleteOrder(order);
+            responseMessage = validateDeleteOrder(order);
         }
 
         return result;
@@ -208,7 +208,7 @@ public class OrderService {
     }
 
     // Metode untuk validasi delete order
-    private String validateDeleteOrder (Order order) {
+    private String validateDeleteOrder(Order order) {
         String message = "";
         if (order == null) {
             message = "Sorry Order is Not Found.";
@@ -219,6 +219,7 @@ public class OrderService {
         }
         return message;
     }
+
     private String validateOrderDetailData(Long orderId, Long productId, int qty) {
         String message = "";
         Order order = getOrderById(orderId);
@@ -263,17 +264,23 @@ public class OrderService {
         List<OrderDetail> orderDetails = orderDetailRepository.getOrderDetailsByOrderIdAndDeletedAtIsNull(orderId);
         int i = 0;
 
-        while (i < orderDetails.size() || orderDetail == null) {
+        while (i < orderDetails.size()) {
             OrderDetail orderDetailFromLoop = orderDetails.get(i);
             Order order = orderDetailFromLoop.getOrder();
 
-            if (order.getId().equals(orderId) && orderDetailFromLoop.getId().equals(detailOrderId)) {
-                orderDetail = orderDetailFromLoop;
-            } else {
+            if (order.getOrderDetails().isEmpty()) {
                 responseMessage = "Sorry, order with ID " + orderId + " doesn't have any product yet.";
+            } else {
+                if (order.getId().equals(orderId) && orderDetailFromLoop.getId().equals(detailOrderId)) {
+                    orderDetail = orderDetailFromLoop;
+                }
             }
 
             i++;
+        }
+
+        if (orderDetail == null) {
+            responseMessage = "Sorry, cannot found order detail with ID " + detailOrderId + " on order with ID " + orderId + ".";
         }
 
         return orderDetail;
