@@ -10,6 +10,5 @@ import java.util.Optional;
 @Repository
 public interface TableRepository extends JpaRepository<TableOrder, Long> {
     List<TableOrder> findAllByDeletedAtIsNull();
-
     Optional<TableOrder> findByIdAndDeletedAtIsNull(Long id);
 }
