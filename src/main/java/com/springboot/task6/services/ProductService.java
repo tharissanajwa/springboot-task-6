@@ -30,11 +30,9 @@ public class ProductService {
     // Metode untuk mendapatkan semua daftar barang yang belum terhapus melalui repository
     public List<Product> getAllProduct() {
         if (productRepository.findAllByDeletedAtIsNull().isEmpty()) {
-            responseMessage = "Data successfully loaded.";
             seedData();
-        } else {
-            responseMessage = "Data successfully loaded.";
         }
+        responseMessage = "Data successfully loaded.";
         return productRepository.findAllByDeletedAtIsNull();
     }
 
@@ -129,34 +127,19 @@ public class ProductService {
 
     // Metode untuk menambahkan sample awal
     private void seedData() {
-        Product product1 = new Product();
-        product1.setName("Nasi Timbel Sunda");
-        product1.setPrice(40_000);
-        product1.setCreatedAt(new Date());
+        Product product1 = new Product("Nasi Timbel Sunda", 40_000);
         productRepository.save(product1);
 
-        Product product2 = new Product();
-        product2.setName("Sate Maranggi");
-        product2.setPrice(30_000);
-        product2.setCreatedAt(new Date());
+        Product product2 = new Product("Sate Maranggi", 30_000);
         productRepository.save(product2);
 
-        Product product3 = new Product();
-        product3.setName("Pepes Ikan Mujair");
-        product3.setPrice(45_000);
-        product3.setCreatedAt(new Date());
+        Product product3 = new Product("Pepes Ikan Mujair", 45_000);
         productRepository.save(product3);
 
-        Product product4 = new Product();
-        product4.setName("Terong Bacem");
-        product4.setPrice(20_000);
-        product4.setCreatedAt(new Date());
+        Product product4 = new Product("Terong Bacem", 20_000);
         productRepository.save(product4);
 
-        Product product5 = new Product();
-        product5.setName("Karedok");
-        product5.setPrice(25_000);
-        product5.setCreatedAt(new Date());
+        Product product5 = new Product("Karedok", 25_000);
         productRepository.save(product5);
     }
 }

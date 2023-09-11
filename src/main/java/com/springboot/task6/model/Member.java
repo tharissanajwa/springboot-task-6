@@ -41,6 +41,7 @@ public class Member {
 
     public Member(String name) {
         this.name = name;
+        this.createdAt = new Date();
     }
 
     public Long getId() {

@@ -34,6 +34,7 @@ public class Employee {
 
     public Employee(String name) {
         this.name = name;
+        this.createdAt = new Date();
     }
 
     public Long getId() {

@@ -16,25 +16,23 @@ public class TableService {
     @Autowired
     private TableRepository repository;
 
-    private String responseMessage;
+    private String responseMessage; // Pesan status untuk memberi informasi kepada pengguna
 
+    // Metode untuk mendapatkan pesan status
     public String getResponseMessage() {
         return responseMessage;
     }
 
+    // Metode untuk mendapatkan semua daftar meja yang belum terhapus melalui repository
     public List<TableOrder> getTableOrders() {
-        List<TableOrder> result = repository.findAllByDeletedAtIsNull();
-
-        if (result.isEmpty()) {
-            responseMessage = "Data successfully loaded.";
+        if (repository.findAllByDeletedAtIsNull().isEmpty()) {
             seedData();
-        } else {
-            responseMessage = "Data successfully loaded.";
         }
-
-        return result;
+        responseMessage = "Data successfully loaded.";
+        return repository.findAllByDeletedAtIsNull();
     }
 
+    // Metode untuk mendapatkan data meja berdasarkan id melalui repository
     public TableOrder getTableOrderById(Long id) {
         Optional<TableOrder> tableOrder = repository.findByIdAndDeletedAtIsNull(id);
 
@@ -47,6 +45,7 @@ public class TableService {
         }
     }
 
+    // Metode untuk menambahkan data meja baru melalui repository
     public TableOrder inserTableOrder(String name) {
         TableOrder newTableOrder = null;
 
@@ -60,6 +59,7 @@ public class TableService {
         return newTableOrder;
     }
 
+    // Metode untuk memperbarui informasi meja melalui repository
     public TableOrder updateTableOrder(Long id, String name) {
         TableOrder tableOrder = getTableOrderById(id);
 
@@ -77,6 +77,7 @@ public class TableService {
         return tableOrder;
     }
 
+    // Metode untuk menghapus data meja secara soft delete melalui repository
     public boolean deleteTableOrder(Long id) {
         boolean result = false;
         TableOrder tableOrder = getTableOrderById(id);
@@ -90,6 +91,7 @@ public class TableService {
         return result;
     }
 
+    // Metode untuk memvalidasi inputan pengguna
     private String inputValidation(String name) {
         String result = "";
 
@@ -102,6 +104,7 @@ public class TableService {
         return result;
     }
 
+    // Metode untuk menambahkan sample awal
     public void seedData() {
         // database seeder
         TableOrder tableOrder1 = new TableOrder("A1");

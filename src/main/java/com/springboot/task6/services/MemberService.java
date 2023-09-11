@@ -30,11 +30,9 @@ public class MemberService {
     // Metode untuk mendapatkan semua daftar anggota yang belum terhapus melalui repository
     public List<Member> getAllMember() {
         if (memberRepository.findAllByDeletedAtIsNull().isEmpty()) {
-            responseMessage = "Data successfully loaded.";
             seedData();
-        } else {
-            responseMessage = "Data successfully loaded.";
         }
+        responseMessage = "Data successfully loaded.";
         return memberRepository.findAllByDeletedAtIsNull();
     }
 
@@ -108,29 +106,19 @@ public class MemberService {
 
     // Metode untuk menambahkan sample awal
     private void seedData() {
-        Member member1 = new Member();
-        member1.setName("Sarah Utami");
-        member1.setCreatedAt(new Date());
+        Member member1 = new Member("Sarah Utami");
         memberRepository.save(member1);
 
-        Member member2 = new Member();
-        member2.setName("Hasan Abdullah");
-        member2.setCreatedAt(new Date());
+        Member member2 = new Member("Hasan Abdullah");
         memberRepository.save(member2);
 
-        Member member3 = new Member();
-        member3.setName("Rina Kartika");
-        member3.setCreatedAt(new Date());
+        Member member3 = new Member("Rina Kartika");
         memberRepository.save(member3);
 
-        Member member4 = new Member();
-        member4.setName("Budi Setiawan");
-        member4.setCreatedAt(new Date());
+        Member member4 = new Member("Budi Setiawan");
         memberRepository.save(member4);
 
-        Member member5 = new Member();
-        member5.setName("Maya Wijaya");
-        member5.setCreatedAt(new Date());
+        Member member5 = new Member("Maya Wijaya");
         memberRepository.save(member5);
     }
 }

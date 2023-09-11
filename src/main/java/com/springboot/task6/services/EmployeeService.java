@@ -25,11 +25,9 @@ public class EmployeeService {
     // Metode untuk mendapatkan semua daftar pegawai yang belum terhapus melalui repository
     public List<Employee> getAllEmployee() {
         if (employeeRepository.findAllByDeletedAtIsNull().isEmpty()) {
-            responseMessage = "Data successfully loaded.";
             seedData();
-        } else {
-            responseMessage = "Data successfully loaded.";
         }
+        responseMessage = "Data successfully loaded.";
         return employeeRepository.findAllByDeletedAtIsNull();
     }
 
@@ -103,29 +101,19 @@ public class EmployeeService {
 
     // Metode untuk menambahkan sample awal
     private void seedData() {
-        Employee employee1 = new Employee();
-        employee1.setName("Ahmad Budi Santoso");
-        employee1.setCreatedAt(new Date());
+        Employee employee1 = new Employee("Ahmad Budi Santoso");
         employeeRepository.save(employee1);
 
-        Employee employee2 = new Employee();
-        employee2.setName("Maria Dewi Suryani");
-        employee2.setCreatedAt(new Date());
+        Employee employee2 = new Employee("Maria Dewi Suryani");
         employeeRepository.save(employee2);
 
-        Employee employee3 = new Employee();
-        employee3.setName("Rizky Pratama Putra");
-        employee3.setCreatedAt(new Date());
+        Employee employee3 = new Employee("Rizky Pratama Putra");
         employeeRepository.save(employee3);
 
-        Employee employee4 = new Employee();
-        employee4.setName("Siti Aisyah Rahman");
-        employee4.setCreatedAt(new Date());
+        Employee employee4 = new Employee("Siti Aisyah Rahman");
         employeeRepository.save(employee4);
 
-        Employee employee5 = new Employee();
-        employee5.setName("Fajar Hidayatullah");
-        employee5.setCreatedAt(new Date());
+        Employee employee5 = new Employee("Fajar Hidayatullah");
         employeeRepository.save(employee5);
     }
 }
