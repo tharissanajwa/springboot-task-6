@@ -41,7 +41,6 @@ public class OrderController {
 
         if (orders != null) httpStatus = HttpStatus.OK;
         else httpStatus = HttpStatus.BAD_REQUEST;
-
         return ResponseEntity.status(httpStatus).body(response);
     }
 
@@ -54,42 +53,6 @@ public class OrderController {
 
         if (orders != null) httpStatus = HttpStatus.OK;
         else httpStatus = HttpStatus.BAD_REQUEST;
-
-        return ResponseEntity.status(httpStatus).body(response);
-    }
-
-    @PostMapping("/{id}/products")
-    public ResponseEntity<ApiResponse> addProductToOrder(@PathVariable("id") Long orderId, @RequestBody OrderDetail detail) {
-        OrderDetail orderDetail = orderService.addProductToOrder(orderId, detail.getProduct().getId(), detail.getQty());
-        ApiResponse response = new ApiResponse(orderService.getResponseMessage(), orderDetail);
-        HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
-
-        if (orderDetail != null) httpStatus = HttpStatus.OK;
-
-        return ResponseEntity.status(httpStatus).body(response);
-    }
-
-    @PatchMapping("/{id}/products/{detailOrderId}")
-    public ResponseEntity<ApiResponse> setProductDone(@PathVariable("id") Long id, @PathVariable("detailOrderId") Long detailOrderId) {
-        OrderDetail orderDetail = orderService.setOrderDetailDone(id, detailOrderId);
-        ApiResponse response = new ApiResponse(orderService.getResponseMessage(), orderDetail);
-        HttpStatus httpStatus;
-
-        if (orderDetail != null) httpStatus = HttpStatus.OK;
-        else httpStatus = HttpStatus.BAD_REQUEST;
-
-        return ResponseEntity.status(httpStatus).body(response);
-    }
-
-    @DeleteMapping("/{id}/products/{detailOrderId}")
-    public ResponseEntity<ApiResponse> deleteOrderDetail(@PathVariable("id") Long id, @PathVariable("detailOrderId") Long detailOrderId) {
-        boolean orderDetail = orderService.deleteOrderDetail(id, detailOrderId);
-        ApiResponse response = new ApiResponse(orderService.getResponseMessage(), null);
-        HttpStatus httpStatus;
-
-        if (orderDetail) httpStatus = HttpStatus.OK;
-        else httpStatus = HttpStatus.BAD_REQUEST;
-
         return ResponseEntity.status(httpStatus).body(response);
     }
 
@@ -102,7 +65,6 @@ public class OrderController {
 
         if (orders != null) httpStatus = HttpStatus.OK;
         else httpStatus = HttpStatus.BAD_REQUEST;
-
         return ResponseEntity.status(httpStatus).body(response);
     }
 
@@ -115,7 +77,42 @@ public class OrderController {
 
         if (isValid) httpStatus = HttpStatus.OK;
         else httpStatus = HttpStatus.BAD_REQUEST;
+        return ResponseEntity.status(httpStatus).body(response);
+    }
 
+    // Metode untuk menambahkan product(detail order) kedalam order berdasarkan id yg diinputkan
+    @PostMapping("/{id}/products")
+    public ResponseEntity<ApiResponse> addProductToOrder(@PathVariable("id") Long orderId, @RequestBody OrderDetail detail) {
+        OrderDetail orderDetail = orderService.addProductToOrder(orderId, detail.getProduct().getId(), detail.getQty());
+        ApiResponse response = new ApiResponse(orderService.getResponseMessage(), orderDetail);
+        HttpStatus httpStatus;
+
+        if (orderDetail != null) httpStatus = HttpStatus.OK;
+        else httpStatus = HttpStatus.BAD_REQUEST;
+        return ResponseEntity.status(httpStatus).body(response);
+    }
+
+    // Metode untuk mengubah status product(detail order) menjadi done berdasarkan id detail order yg diinputkan
+    @PatchMapping("/{id}/products/{detailOrderId}")
+    public ResponseEntity<ApiResponse> setProductDone(@PathVariable("id") Long id, @PathVariable("detailOrderId") Long detailOrderId) {
+        OrderDetail orderDetail = orderService.setOrderDetailDone(id, detailOrderId);
+        ApiResponse response = new ApiResponse(orderService.getResponseMessage(), orderDetail);
+        HttpStatus httpStatus;
+
+        if (orderDetail != null) httpStatus = HttpStatus.OK;
+        else httpStatus = HttpStatus.BAD_REQUEST;
+        return ResponseEntity.status(httpStatus).body(response);
+    }
+
+    // Metode untuk menghapus product(detail order) berdasarkan id detail order yg diinputkan
+    @DeleteMapping("/{id}/products/{detailOrderId}")
+    public ResponseEntity<ApiResponse> deleteOrderDetail(@PathVariable("id") Long id, @PathVariable("detailOrderId") Long detailOrderId) {
+        boolean orderDetail = orderService.deleteOrderDetail(id, detailOrderId);
+        ApiResponse response = new ApiResponse(orderService.getResponseMessage(), null);
+        HttpStatus httpStatus;
+
+        if (orderDetail) httpStatus = HttpStatus.OK;
+        else httpStatus = HttpStatus.BAD_REQUEST;
         return ResponseEntity.status(httpStatus).body(response);
     }
 }
