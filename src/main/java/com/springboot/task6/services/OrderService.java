@@ -106,11 +106,13 @@ public class OrderService {
         boolean result = false;
         Order order = getOrderById(id);
 
-        if (order != null) {
+        if (!order.isPaid() && !order.getOrderDetails().isEmpty()) {
             order.setDeletedAt(new Date());
             orderRepository.save(order);
             result = true;
             responseMessage = "Data successfully removed.";
+        } else {
+            responseMessage = "Sorry, payment can't be made.";
         }
 
         return result;
