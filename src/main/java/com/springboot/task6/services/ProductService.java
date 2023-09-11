@@ -127,8 +127,8 @@ public class ProductService {
         return result;
     }
 
-    public void seedData() {
-        // database seeder
+    // Metode untuk menambahkan sample awal
+    private void seedData() {
         Product product1 = new Product();
         product1.setName("Nasi Timbel Sunda");
         product1.setPrice(40_000);
