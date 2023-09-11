@@ -42,6 +42,7 @@ public class TableOrder {
     public TableOrder(String name) {
         this.name = name;
         this.isAvailable = true;
+        this.createdAt = new Date();
     }
 
     public Long getId() {

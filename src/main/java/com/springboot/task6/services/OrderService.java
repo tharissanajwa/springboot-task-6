@@ -124,31 +124,22 @@ public class OrderService {
         Order order = getOrderById(orderId);
         Product product = productService.getProductById(productId);
 
-        if (order != null) {
-            if (product != null) {
-                if (qty > 0) {
-                    if (!order.isPaid()) {
-                        result = new OrderDetail(order, product, qty);
-                        order.addOrderDetail(result);
-                        int totalAmount = accumulateTotalAmount(order);
+        if (validateOrderDetailData(orderId, productId, qty).isEmpty()) {
+            result = new OrderDetail(order, product, qty);
+            order.addOrderDetail(result);
+            int totalAmount = accumulateTotalAmount(order);
 
-                        order.setTotalAmount(totalAmount);
-                        if (order.getMember() != null) {
-                            int pointObtained = accumulatePoints(result);
-                            order.setPointObtained(pointObtained);
-                        }
+            order.setTotalAmount(totalAmount);
 
-                        orderDetailRepository.save(result);
-                        orderRepository.save(order);
-                    } else {
-                        responseMessage = "Sorry, order with ID " + order.getId() + " has been paid.";
-                    }
-                } else {
-                    responseMessage = "Sorry, quantity must be positive number.";
-                }
-            } else {
-                responseMessage = "Sorry, product with ID " + productId + " doesn't exist.";
+            if (order.getMember() != null) {
+                int pointObtained = accumulatePoints(result);
+                order.setPointObtained(pointObtained);
             }
+
+            orderDetailRepository.save(result);
+            orderRepository.save(order);
+        } else {
+            responseMessage = validateOrderDetailData(orderId, productId, qty);
         }
 
         return result;
@@ -180,7 +171,7 @@ public class OrderService {
                 int total = accumulateTotalAmount(order);
                 getOrderById(orderId).setTotalAmount(total);
                 if (order.getMember() != null) {
-                    int pointObtained = total/1000;
+                    int pointObtained = total / 1000;
                     order.setPointObtained(pointObtained);
                 }
                 orderRepository.save(order);
@@ -228,6 +219,18 @@ public class OrderService {
         }
         return message;
     }
+    private String validateOrderDetailData(Long orderId, Long productId, int qty) {
+        String message = "";
+        Order order = getOrderById(orderId);
+        Product product = productService.getProductById(productId);
+
+        if (order == null) message = "Sorry, order with ID " + orderId + " doesn't exist.";
+        else if (product == null) message = "Sorry, product with ID " + productId + " doesn't exist.";
+        else if (qty < 1) message = "Sorry, quantity must be positive number.";
+        else if (order.isPaid()) message = "Sorry, order with ID " + order.getId() + " has been paid.";
+
+        return message;
+    }
 
     // Metode untuk menghitung total pesanan yang harus dibayarkan
     private int accumulateTotalAmount(Order order) {
@@ -259,22 +262,18 @@ public class OrderService {
         OrderDetail orderDetail = null;
         List<OrderDetail> orderDetails = orderDetailRepository.getOrderDetailsByOrderIdAndDeletedAtIsNull(orderId);
         int i = 0;
-        System.out.println("order id from param: " + orderId);
-        System.out.println("order detail id from param: " + detailOrderId);
-        while (i < orderDetails.size()) {
+
+        while (i < orderDetails.size() || orderDetail == null) {
             OrderDetail orderDetailFromLoop = orderDetails.get(i);
             Order order = orderDetailFromLoop.getOrder();
-            System.out.println("order detail from loop: " + orderDetailFromLoop.getId());
-            System.out.println("order from order detail loop: " + order.getId());
 
             if (order.getId().equals(orderId) && orderDetailFromLoop.getId().equals(detailOrderId)) {
                 orderDetail = orderDetailFromLoop;
+            } else {
+                responseMessage = "Sorry, order with ID " + orderId + " doesn't have any product yet.";
             }
-            i++;
-        }
 
-        if (orderDetail == null) {
-            responseMessage = "Sorry, order detail with ID " + detailOrderId + " not found on order id " + orderId + ".";
+            i++;
         }
 
         return orderDetail;
