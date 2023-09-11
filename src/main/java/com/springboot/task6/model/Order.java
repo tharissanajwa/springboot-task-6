@@ -151,6 +151,10 @@ public class Order {
         this.orderDetails.add(detail);
     }
 
+    public void removeOrderDetail(OrderDetail detail) {
+        this.orderDetails.remove(detail);
+    }
+
     public void addTotalAmount(int amount) {
         this.totalAmount += amount;
     }

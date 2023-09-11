@@ -75,12 +75,13 @@ public class OrderService {
             Employee employee = employeeService.getEmployeeById(employeeId);
             TableOrder tableOrder = tableService.getTableOrderById(tableId);
 
-            if (member == null) result = new Order(employee, tableOrder);
-            else result = new Order(member, employee, tableOrder);
+            if (member == null) result = new Order(employee, tableOrder); // create order obj with no member
+            else result = new Order(member, employee, tableOrder); // create order obj with member assigned
 
-            tableService.getTableOrderById(tableId).setAvailable(false);
+            tableService.getTableOrderById(tableId).setAvailable(false); // set selected table status to not available
             result.setCreatedAt(new Date());
-            orderRepository.save(result);
+
+            orderRepository.save(result); // save order data to database
             responseMessage = "Data successfully added!";
         } else {
             responseMessage = inputValidation(tableId, memberId, employeeId);
@@ -126,7 +127,7 @@ public class OrderService {
 
         if (validateOrderDetailData(orderId, productId, qty).isEmpty()) {
             result = new OrderDetail(order, product, qty);
-            order.addOrderDetail(result);
+            order.addOrderDetail(result); // add result obj to order obj
             int totalAmount = accumulateTotalAmount(order);
 
             order.setTotalAmount(totalAmount);
@@ -147,12 +148,17 @@ public class OrderService {
 
     // Metode untuk mengubah status product(detail order) menjadi done berdasarkan id detail order yg diinputkan
     public OrderDetail setOrderDetailDone(Long orderId, Long detailOrderId) {
-        OrderDetail orderDetail = getOrderDetailById(orderId, detailOrderId);
+        Order order = getOrderById(orderId);
+        OrderDetail orderDetail = null;
 
-        if (orderDetail != null) {
-            orderDetail.setDone(true);
-            responseMessage = "Product successfully set to done.";
-            orderDetailRepository.save(orderDetail);
+        if (order != null) {
+            orderDetail = getOrderDetailById(orderId, detailOrderId);
+
+            if (orderDetail != null) {
+                orderDetail.setDone(true);
+                responseMessage = "Product successfully set to done.";
+                orderDetailRepository.save(orderDetail);
+            }
         }
 
         return orderDetail;
@@ -161,24 +167,30 @@ public class OrderService {
     // Metode untuk menghapus product(detail order) berdasarkan id detail order yg diinputkan
     public boolean deleteOrderDetail(Long orderId, Long detailOrderId) {
         boolean result = true;
-        OrderDetail orderDetail = getOrderDetailById(orderId, detailOrderId);
+        Order order = getOrderById(orderId);
 
-        if (orderDetail != null) {
-            if (!orderDetail.isDone()) {
-                orderDetail.setDeletedAt(new Date());
-                orderDetailRepository.deleteById(detailOrderId);
-                Order order = getOrderById(orderId);
-                int total = accumulateTotalAmount(order);
-                getOrderById(orderId).setTotalAmount(total);
+        if (order != null) {
+            OrderDetail orderDetail = getOrderDetailById(orderId, detailOrderId);
+
+            if (orderDetail != null && !orderDetail.isDone()) {
+                order.removeOrderDetail(orderDetail);
+                orderDetailRepository.deleteById(detailOrderId); // delete selected orderDetail from database
+
+                int total = accumulateTotalAmount(order); // recalculate totalAmount after selected orderDetail removed from order
+                order.setTotalAmount(total); // assign new calculated total to order obj
+
                 if (order.getMember() != null) {
-                    int pointObtained = total / 1000;
+                    int pointObtained = total / 1000; // recalculate point from order after selected orderDetail removed from order
                     order.setPointObtained(pointObtained);
                 }
-                orderRepository.save(order);
+
+                orderRepository.save(order); // save new order data to database
                 responseMessage = "Data order detail successfully removed.";
             } else {
+                if (orderDetail != null && orderDetail.isDone()) {
+                    responseMessage = "Sorry, order with product ID " + detailOrderId + " has been done.";
+                }
                 result = false;
-                responseMessage = "Sorry, order with product ID " + detailOrderId + " has been done.";
             }
         }
 
@@ -213,7 +225,7 @@ public class OrderService {
         if (order == null) {
             message = "Sorry Order is Not Found.";
         } else if (order.isPaid()) {
-            message = "Sorry, data can't be deleted because order has been paid.";
+            message = "Sorry, order can't be deleted because order has been paid.";
         } else if (!order.getOrderDetails().isEmpty()) {
             message = "Sorry, can't remove your order because there is products in order with ID 1.";
         }
@@ -237,7 +249,7 @@ public class OrderService {
     private int accumulateTotalAmount(Order order) {
         int total = 0;
 
-        for (int i = 0; i < order.getOrderDetails().size(); i++) { // looping through list<OrderDetail> in Order obj
+        for (int i = 0; i < order.getOrderDetails().size(); i++) { // iterate through list<OrderDetail> in Order obj
             OrderDetail detail = order.getOrderDetails().get(i);
             int productPrice = detail.getProduct().getPrice();
             int qty = detail.getQty();
@@ -249,8 +261,8 @@ public class OrderService {
 
     // Metode untuk menghitung total point yang didapatkan member
     private int accumulatePoints(OrderDetail orderDetail) {
-        int pointFromOrder = orderDetail.getOrder().getPointObtained();
-        int productTotalPrice = orderDetail.getProduct().getPrice() * orderDetail.getQty();
+        int pointFromOrder = orderDetail.getOrder().getPointObtained(); // get point value from orderDetail.order
+        int productTotalPrice = orderDetail.getProduct().getPrice() * orderDetail.getQty(); // calculate product total price
         int pointToAdd = productTotalPrice / 1000;
 
         pointFromOrder += pointToAdd; // accumulate existing point in Order obj with pointToAdd variable
@@ -280,7 +292,7 @@ public class OrderService {
         }
 
         if (orderDetail == null) {
-            responseMessage = "Sorry, cannot found order detail with ID " + detailOrderId + " on order with ID " + orderId + ".";
+            responseMessage = "Sorry, cannot find Order Detail with ID " + detailOrderId + " on Order with ID " + orderId + ".";
         }
 
         return orderDetail;
