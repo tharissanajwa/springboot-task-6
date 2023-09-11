@@ -40,7 +40,6 @@ public class MemberController {
 
         if (members != null) httpStatus = HttpStatus.OK;
         else httpStatus = HttpStatus.BAD_REQUEST;
-
         return ResponseEntity.status(httpStatus).body(response);
     }
 
@@ -53,7 +52,6 @@ public class MemberController {
 
         if (members != null) httpStatus = HttpStatus.OK;
         else httpStatus = HttpStatus.BAD_REQUEST;
-
         return  ResponseEntity.status(httpStatus).body(response);
     }
 
@@ -66,7 +64,6 @@ public class MemberController {
 
         if (members != null)  httpStatus = HttpStatus.OK;
         else httpStatus = HttpStatus.BAD_REQUEST;
-
         return ResponseEntity.status(httpStatus).body(response);
     }
 
@@ -79,7 +76,6 @@ public class MemberController {
 
         if (isValid) httpStatus = HttpStatus.OK;
         else httpStatus = HttpStatus.BAD_REQUEST;
-
         return ResponseEntity.status(httpStatus).body(response);
     }
 }

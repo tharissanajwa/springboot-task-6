@@ -67,15 +67,16 @@ public class MemberService {
     // Metode untuk memperbarui informasi anggota melalui repository
     public Member updateMember(Long id, String name) {
         Member result = null;
-        if (inputValidation(name) != "") {
-            responseMessage = inputValidation(name);
-        }
         if (getMemberById(id) != null) {
-            getMemberById(id).setName(Validation.inputTrim(name));
-            result = getMemberById(id);
-            result.setUpdatedAt(new Date());
-            memberRepository.save(result);
-            responseMessage = "Data successfully updated!";
+            if (inputValidation(name) != "") {
+                responseMessage = inputValidation(name);
+            } else {
+                getMemberById(id).setName(Validation.inputTrim(name));
+                result = getMemberById(id);
+                result.setUpdatedAt(new Date());
+                memberRepository.save(result);
+                responseMessage = "Data successfully updated!";
+            }
         }
         return result;
     }
@@ -105,8 +106,8 @@ public class MemberService {
         return result;
     }
 
-    public void seedData() {
-        // database seeder
+    // Metode untuk menambahkan sample awal
+    private void seedData() {
         Member member1 = new Member();
         member1.setName("Sarah Utami");
         member1.setCreatedAt(new Date());
