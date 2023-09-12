@@ -16,9 +16,6 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
-    @Autowired
-    private Validation validation;
-
     // Pesan status untuk memberi informasi kepada pengguna
     private String responseMessage;
 
@@ -42,10 +39,10 @@ public class ProductService {
         if (!result.isPresent()) {
             responseMessage = "Sorry, id product is not found.";
             return null;
-        } else {
-            responseMessage = "Data successfully loaded.";
-            return result.get();
         }
+        responseMessage = "Data successfully loaded.";
+        return result.get();
+
     }
 
     // Metode untuk menambahkan barang ke dalam data melalui repository
