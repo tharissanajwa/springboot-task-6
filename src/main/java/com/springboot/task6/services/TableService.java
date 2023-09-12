@@ -25,7 +25,7 @@ public class TableService {
 
     // Metode untuk mendapatkan semua daftar meja yang belum terhapus melalui repository
     public List<TableOrder> getTableOrders() {
-        List<TableOrder> result = repository.findAllByDeletedAtIsNull();
+        List<TableOrder> result = repository.findAllByDeletedAtIsNullOrderByName();
         if (result.isEmpty()) {
             responseMessage = "Data doesn't exists, please insert new data table.";
         } else {
@@ -41,17 +41,16 @@ public class TableService {
         if (tableOrder.isPresent()) {
             responseMessage = "Data successfully loaded.";
             return tableOrder.get();
-        } else {
-            responseMessage = "Sorry, ID Table is not found.";
-            return null;
         }
+        responseMessage = "Sorry, ID Table is not found.";
+        return null;
     }
 
     // Metode untuk menambahkan data meja baru melalui repository
     public TableOrder inserTableOrder(String name) {
         TableOrder newTableOrder = null;
 
-        if (!Objects.equals(inputValidation(name), "")) {
+        if (!inputValidation(name).isEmpty()) {
             responseMessage = inputValidation(name);
         } else {
             newTableOrder = new TableOrder(Validation.inputTrim(name));

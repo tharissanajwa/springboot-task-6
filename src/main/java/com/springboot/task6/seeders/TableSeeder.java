@@ -25,7 +25,7 @@ public class TableSeeder {
                 new TableOrder("A5")
         ));
 
-        if (tableRepository.findAllByDeletedAtIsNull().isEmpty()) {
+        if (tableRepository.findAllByDeletedAtIsNullOrderByName().isEmpty()) {
             tableRepository.saveAll(tableOrders);
         }
     }

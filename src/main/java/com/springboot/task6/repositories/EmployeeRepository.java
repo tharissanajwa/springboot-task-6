@@ -7,6 +7,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
-    List<Employee> findAllByDeletedAtIsNull();
+    List<Employee> findAllByDeletedAtIsNullOrderByName();
     Optional<Employee> findByIdAndDeletedAtIsNull(Long id);
 }

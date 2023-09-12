@@ -25,7 +25,7 @@ public class MemberSeeder {
                 new Member("Maya Wijaya")
         ));
 
-        if (memberRepository.findAllByDeletedAtIsNull().isEmpty()) {
+        if (memberRepository.findAllByDeletedAtIsNullOrderByName().isEmpty()) {
             memberRepository.saveAll(members);
         }
     }

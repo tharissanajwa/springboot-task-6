@@ -23,8 +23,7 @@ public class TableOrder {
     @JsonIgnore
     @OneToMany(mappedBy = "table")
     private List<Order> orders;
-    @Column(name = "is_available", nullable = false)
-    @ColumnDefault("true")
+    @Column(name = "is_available")
     private boolean isAvailable; // Status meja tersedia atau tidak
     @JsonIgnore
     @Column(name = "created_at", columnDefinition = "DATE DEFAULT CURRENT_DATE")

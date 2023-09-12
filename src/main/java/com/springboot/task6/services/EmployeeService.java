@@ -24,7 +24,7 @@ public class EmployeeService {
 
     // Metode untuk mendapatkan semua daftar pegawai yang belum terhapus melalui repository
     public List<Employee> getAllEmployee() {
-        List<Employee> result = employeeRepository.findAllByDeletedAtIsNull();
+        List<Employee> result = employeeRepository.findAllByDeletedAtIsNullOrderByName();
         if (result.isEmpty()) {
             responseMessage = "Data doesn't exists, please insert new data employee.";
         } else {
@@ -47,7 +47,7 @@ public class EmployeeService {
     // Metode untuk menambahkan pegawai baru ke dalam data melalui repository
     public Employee insertEmployee(String name) {
         Employee result = null;
-        if (inputValidation(name) != "") {
+        if (!inputValidation(name).isEmpty()) {
             responseMessage = inputValidation(name);
         } else {
             result = new Employee(Validation.inputTrim(name));
@@ -62,7 +62,7 @@ public class EmployeeService {
     public Employee updateEmployee(Long id, String name) {
         Employee result = getEmployeeById(id);
         if (result != null) {
-            if (inputValidation(name) != "") {
+            if (!inputValidation(name).isEmpty()) {
                 responseMessage = inputValidation(name);
                 return null;
             } else {

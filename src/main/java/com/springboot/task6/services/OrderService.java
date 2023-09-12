@@ -44,7 +44,7 @@ public class OrderService {
 
     // Metode untuk mendapatkan semua daftar order yang belum terhapus melalui repository
     public List<Order> getAllOrder() {
-        List<Order> orders = orderRepository.findAllByDeletedAtIsNull();
+        List<Order> orders = orderRepository.findAllByDeletedAtIsNullOrderByIdDesc();
         if (orders.isEmpty()) {
             responseMessage = "Data doesn't exists, please insert new data order.";
         } else {
@@ -55,7 +55,7 @@ public class OrderService {
 
     // Metode untuk mendapatkan semua daftar order yang belum terhapus dan sudah dibayar (rekap pencatatan transaksi) melalui repository
     public List<Order> getPaidOrders() {
-        List<Order> orders = orderRepository.findAllByDeletedAtIsNullAndIsPaidTrue();
+        List<Order> orders = orderRepository.findAllByDeletedAtIsNullAndIsPaidTrueOrderByIdDesc();
         if (orders.isEmpty()) {
             responseMessage = "Data doesn't exists, please insert new data order.";
         } else {
@@ -71,10 +71,9 @@ public class OrderService {
         if (result.isPresent()) {
             responseMessage = "Data successfully loaded.";
             return result.get();
-        } else {
-            responseMessage = "Sorry, id order is not found.";
-            return null;
         }
+        responseMessage = "Sorry, id order is not found.";
+        return null;
     }
 
     // Metode untuk menambahkan order baru ke dalam data melalui repository
@@ -284,7 +283,7 @@ public class OrderService {
     // Metode untuk mendapatkan detail order berdasarkan orderId dan detailOrderId
     private OrderDetail getOrderDetailById(Long orderId, Long detailOrderId) {
         OrderDetail orderDetail = null;
-        List<OrderDetail> orderDetails = orderDetailRepository.getOrderDetailsByOrderIdAndDeletedAtIsNull(orderId);
+        List<OrderDetail> orderDetails = orderDetailRepository.getOrderDetailsByOrderIdAndDeletedAtIsNullOrderById(orderId);
         int i = 0;
 
         while (i < orderDetails.size()) {

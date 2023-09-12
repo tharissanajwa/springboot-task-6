@@ -20,11 +20,9 @@ public class Product {
     private Long id;
     private String name;
     private Integer price;
-
     @JsonIgnore
     @OneToMany(mappedBy = "product")
     private List<OrderDetail> orderDetails;
-
     @JsonIgnore
     @Column(name = "created_at", columnDefinition = "DATE DEFAULT CURRENT_DATE")
     private Date createdAt;

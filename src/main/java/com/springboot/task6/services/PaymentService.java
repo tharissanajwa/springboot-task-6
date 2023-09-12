@@ -33,12 +33,12 @@ public class PaymentService {
 
     // Metode untuk mengambil semua data pembayaran
     public List<Payment> getAllPayment() {
-        if (paymentRepository.findAllByDeletedAtIsNull().isEmpty()) {
+        if (paymentRepository.findAllByDeletedAtIsNullOrderByIdDesc().isEmpty()) {
             responseMessage = "Data doesn't exists, please insert new data payment.";
         } else {
             responseMessage = "Data successfully loaded.";
         }
-        return paymentRepository.findAllByDeletedAtIsNull();
+        return paymentRepository.findAllByDeletedAtIsNullOrderByIdDesc();
     }
 
     // Metode untuk mengambil data pembayaran berdasarkan id
@@ -159,8 +159,6 @@ public class PaymentService {
                 result = "Payment cannot be made because the order has been paid.";
             } else if (!isDone) {
                 result =  "Payment cannot be made because not all order details are done.";
-            } else {
-
             }
         }
         return result;

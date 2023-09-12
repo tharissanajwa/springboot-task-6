@@ -16,9 +16,6 @@ public class MemberService {
     @Autowired
     private MemberRepository memberRepository;
 
-    @Autowired
-    private Validation validation;
-
     // Pesan status untuk memberi informasi kepada pengguna
     private String responseMessage;
 
@@ -29,7 +26,7 @@ public class MemberService {
 
     // Metode untuk mendapatkan semua daftar anggota yang belum terhapus melalui repository
     public List<Member> getAllMember() {
-        List<Member> result = memberRepository.findAllByDeletedAtIsNull();
+        List<Member> result = memberRepository.findAllByDeletedAtIsNullOrderByName();
         if (result.isEmpty()) {
             responseMessage = "Data doesn't exists, please insert new data member.";
         } else {
@@ -44,16 +41,15 @@ public class MemberService {
         if (!result.isPresent()) {
             responseMessage = "Sorry, id member is not found.";
             return null;
-        } else {
-            responseMessage = "Data successfully loaded.";
-            return result.get();
         }
+        responseMessage = "Data successfully loaded.";
+        return result.get();
     }
 
     // Metode untuk menambahkan anggota ke dalam data melalui repository
     public Member insertMember(String name) {
         Member result = null;
-        if (inputValidation(name) != "") {
+        if (!inputValidation(name).isEmpty()) {
             responseMessage = inputValidation(name);
         } else {
             result = new Member(Validation.inputTrim(name));
@@ -68,7 +64,7 @@ public class MemberService {
     public Member updateMember(Long id, String name) {
         Member result = null;
         if (getMemberById(id) != null) {
-            if (inputValidation(name) != "") {
+            if (!inputValidation(name).isEmpty()) {
                 responseMessage = inputValidation(name);
             } else {
                 getMemberById(id).setName(Validation.inputTrim(name));
