@@ -53,6 +53,17 @@ public class OrderService {
         return orders;
     }
 
+    // Metode untuk mendapatkan semua daftar order yang belum terhapus dan sudah dibayar (rekap pencatatan transaksi) melalui repository
+    public List<Order> getPaidOrders() {
+        List<Order> orders = orderRepository.findAllByDeletedAtIsNullAndIsPaidTrue();
+        if (orders.isEmpty()) {
+            responseMessage = "Data doesn't exists, please insert new data order.";
+        } else {
+            responseMessage = "Data successfully loaded.";
+        }
+        return orders;
+    }
+
     // Metode untuk mendapatkan data order berdasarkan id melalui repository
     public Order getOrderById(Long id) {
         Optional<Order> result = orderRepository.findByIdAndDeletedAtIsNull(id);
