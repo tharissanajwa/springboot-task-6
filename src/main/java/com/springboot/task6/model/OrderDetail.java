@@ -18,20 +18,16 @@ public class OrderDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "order_id", referencedColumnName = "id")
     private Order order;
-
     @ManyToOne
     @JoinColumn(name = "product_id", referencedColumnName = "id")
     private Product product;
-
     @Column(name = "is_done", columnDefinition = "BOOLEAN DEFAULT FALSE")
-    private boolean isDone; // Status pesanan
-    private int qty;
-
+    private Boolean isDone; // Status pesanan
+    private Integer qty;
     @JsonIgnore
     @Column(name = "created_at", columnDefinition = "DATE DEFAULT CURRENT_DATE")
     private Date createdAt;

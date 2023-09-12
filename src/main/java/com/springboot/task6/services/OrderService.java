@@ -71,10 +71,9 @@ public class OrderService {
         if (result.isPresent()) {
             responseMessage = "Data successfully loaded.";
             return result.get();
-        } else {
-            responseMessage = "Sorry, id order is not found.";
-            return null;
         }
+        responseMessage = "Sorry, id order is not found.";
+        return null;
     }
 
     // Metode untuk menambahkan order baru ke dalam data melalui repository
