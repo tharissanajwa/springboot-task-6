@@ -8,6 +8,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TableRepository extends JpaRepository<TableOrder, Long> {
-    List<TableOrder> findAllByDeletedAtIsNull();
+    List<TableOrder> findAllByDeletedAtIsNullOrderByName();
     Optional<TableOrder> findByIdAndDeletedAtIsNull(Long id);
 }

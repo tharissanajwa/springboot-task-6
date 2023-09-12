@@ -26,7 +26,7 @@ public class ProductSeeder {
                 new Product("Karedok", 25_000)
         ));
 
-        if (productRepository.findAllByDeletedAtIsNull().isEmpty()) {
+        if (productRepository.findAllByDeletedAtIsNullOrderByName().isEmpty()) {
             productRepository.saveAll(products);
         }
     }

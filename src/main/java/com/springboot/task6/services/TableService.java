@@ -25,7 +25,7 @@ public class TableService {
 
     // Metode untuk mendapatkan semua daftar meja yang belum terhapus melalui repository
     public List<TableOrder> getTableOrders() {
-        List<TableOrder> result = repository.findAllByDeletedAtIsNull();
+        List<TableOrder> result = repository.findAllByDeletedAtIsNullOrderByName();
         if (result.isEmpty()) {
             responseMessage = "Data doesn't exists, please insert new data table.";
         } else {

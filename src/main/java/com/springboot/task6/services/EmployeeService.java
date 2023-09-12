@@ -24,7 +24,7 @@ public class EmployeeService {
 
     // Metode untuk mendapatkan semua daftar pegawai yang belum terhapus melalui repository
     public List<Employee> getAllEmployee() {
-        List<Employee> result = employeeRepository.findAllByDeletedAtIsNull();
+        List<Employee> result = employeeRepository.findAllByDeletedAtIsNullOrderByName();
         if (result.isEmpty()) {
             responseMessage = "Data doesn't exists, please insert new data employee.";
         } else {

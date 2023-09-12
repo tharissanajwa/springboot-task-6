@@ -26,7 +26,7 @@ public class MemberService {
 
     // Metode untuk mendapatkan semua daftar anggota yang belum terhapus melalui repository
     public List<Member> getAllMember() {
-        List<Member> result = memberRepository.findAllByDeletedAtIsNull();
+        List<Member> result = memberRepository.findAllByDeletedAtIsNullOrderByName();
         if (result.isEmpty()) {
             responseMessage = "Data doesn't exists, please insert new data member.";
         } else {

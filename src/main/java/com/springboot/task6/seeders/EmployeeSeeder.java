@@ -25,7 +25,7 @@ public class EmployeeSeeder {
                 new Employee("Fajar Hidayatullah")
         ));
 
-        if (employeeRepository.findAllByDeletedAtIsNull().isEmpty()) {
+        if (employeeRepository.findAllByDeletedAtIsNullOrderByName().isEmpty()) {
             employeeRepository.saveAll(employees);
         }
     }

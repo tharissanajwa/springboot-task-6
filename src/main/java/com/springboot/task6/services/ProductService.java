@@ -26,7 +26,7 @@ public class ProductService {
 
     // Metode untuk mendapatkan semua daftar barang yang belum terhapus melalui repository
     public List<Product> getAllProduct() {
-        List<Product> result = productRepository.findAllByDeletedAtIsNull();
+        List<Product> result = productRepository.findAllByDeletedAtIsNullOrderByName();
          if (result.isEmpty()) {
             responseMessage = "Data doesn't exists, please insert new data product.";
         } else {
