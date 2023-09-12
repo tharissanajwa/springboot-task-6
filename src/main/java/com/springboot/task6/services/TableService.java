@@ -39,17 +39,16 @@ public class TableService {
         if (tableOrder.isPresent()) {
             responseMessage = "Data successfully loaded.";
             return tableOrder.get();
-        } else {
-            responseMessage = "Sorry, ID Table is not found.";
-            return null;
         }
+        responseMessage = "Sorry, ID Table is not found.";
+        return null;
     }
 
     // Metode untuk menambahkan data meja baru melalui repository
     public TableOrder inserTableOrder(String name) {
         TableOrder newTableOrder = null;
 
-        if (!Objects.equals(inputValidation(name), "")) {
+        if (!inputValidation(name).isEmpty()) {
             responseMessage = inputValidation(name);
         } else {
             newTableOrder = new TableOrder(Validation.inputTrim(name));
@@ -106,7 +105,6 @@ public class TableService {
 
     // Metode untuk menambahkan sample awal
     public void seedData() {
-        // database seeder
         TableOrder tableOrder1 = new TableOrder("A1");
         repository.save(tableOrder1);
 
