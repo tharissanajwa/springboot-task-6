@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -26,8 +27,14 @@ public class OrderController {
 
     // Metode untuk mengambil semua data order dari fungsi yg telah dibuat di service
     @GetMapping("")
-    public ResponseEntity<ApiResponse> getAllOrder() {
-        List<Order> orders = orderService.getAllOrder();
+    public ResponseEntity<ApiResponse> getAllOrder(@RequestParam boolean isPaid) {
+        List<Order> orders;
+        if (isPaid) {
+            orders = orderService.getPaidOrders();
+        } else {
+            orders = orderService.getAllOrder();
+        }
+
         ApiResponse response = new ApiResponse(orderService.getResponseMessage(), orders);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
