@@ -29,11 +29,13 @@ public class ProductService {
 
     // Metode untuk mendapatkan semua daftar barang yang belum terhapus melalui repository
     public List<Product> getAllProduct() {
-        if (productRepository.findAllByDeletedAtIsNull().isEmpty()) {
-            seedData();
+        List<Product> result = productRepository.findAllByDeletedAtIsNull();
+         if (result.isEmpty()) {
+            responseMessage = "Data doesn't exists, please insert new data product.";
+        } else {
+            responseMessage = "Data successfully loaded.";
         }
-        responseMessage = "Data successfully loaded.";
-        return productRepository.findAllByDeletedAtIsNull();
+         return result;
     }
 
     // Metode untuk mendapatkan data barang berdasarkan id melalui repository
@@ -123,23 +125,5 @@ public class ProductService {
             result = "Sorry, price must be more than 0.";
         }
         return result;
-    }
-
-    // Metode untuk menambahkan sample awal
-    private void seedData() {
-        Product product1 = new Product("Nasi Timbel Sunda", 40_000);
-        productRepository.save(product1);
-
-        Product product2 = new Product("Sate Maranggi", 30_000);
-        productRepository.save(product2);
-
-        Product product3 = new Product("Pepes Ikan Mujair", 45_000);
-        productRepository.save(product3);
-
-        Product product4 = new Product("Terong Bacem", 20_000);
-        productRepository.save(product4);
-
-        Product product5 = new Product("Karedok", 25_000);
-        productRepository.save(product5);
     }
 }
