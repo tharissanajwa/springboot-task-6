@@ -25,7 +25,7 @@ public class OrderDetail {
     @ManyToOne
     @JoinColumn(name = "product_id", referencedColumnName = "id")
     private Product product;
-    @Column(name = "is_done", columnDefinition = "BOOLEAN DEFAULT FALSE")
+    @Column(name = "is_done")
     private Boolean isDone; // Status pesanan
     private Integer qty;
     @JsonIgnore
@@ -45,6 +45,7 @@ public class OrderDetail {
         this.order = order;
         this.product = product;
         this.qty = quantity;
+        this.isDone = false;
     }
 
     public Long getId() {

@@ -31,12 +31,12 @@ public class Order {
     private TableOrder table;
     @OneToMany(mappedBy = "order")
     private List<OrderDetail> orderDetails;
-    @Column(name = "total_amount", columnDefinition = "INTEGER DEFAULT 0")
+    @Column(name = "total_amount")
     private Integer totalAmount;
     private String note;
-    @Column(name = " is_paid", columnDefinition = "BOOLEAN DEFAULT FALSE")
+    @Column(name = "is_paid")
     private Boolean isPaid;
-    @Column(name = "point_obtained", columnDefinition = "INTEGER DEFAULT 0")
+    @Column(name = "point_obtained")
     private Integer pointObtained; // Poin yang akan didapatkan member
     @OneToOne(mappedBy = "order")
     private Payment payment;
@@ -57,6 +57,8 @@ public class Order {
         this.orderDetails = new ArrayList<>();
         this.note = "";
         this.pointObtained = 0;
+        this.totalAmount = 0;
+        this.isPaid = false;
     }
 
     public Order(Employee employee, TableOrder table) {
@@ -66,6 +68,8 @@ public class Order {
         this.orderDetails = new ArrayList<>();
         this.note = "";
         this.pointObtained = 0;
+        this.totalAmount = 0;
+        this.isPaid = false;
     }
 
     public Long getId() {
