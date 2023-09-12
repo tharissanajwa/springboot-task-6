@@ -20,8 +20,7 @@ public class Member {
     private Long id;
     private String name;
     @Column(columnDefinition = "INTEGER DEFAULT 0")
-    private int point;
-
+    private Integer point;
     @JsonIgnore
     @OneToMany(mappedBy = "member")
     private List<Order> orders;
