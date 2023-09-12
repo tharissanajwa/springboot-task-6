@@ -26,11 +26,13 @@ public class MemberService {
 
     // Metode untuk mendapatkan semua daftar anggota yang belum terhapus melalui repository
     public List<Member> getAllMember() {
-        if (memberRepository.findAllByDeletedAtIsNull().isEmpty()) {
-            seedData();
+        List<Member> result = memberRepository.findAllByDeletedAtIsNull();
+        if (result.isEmpty()) {
+            responseMessage = "Data doesn't exists, please insert new data member.";
+        } else {
+            responseMessage = "Data successfully loaded.";
         }
-        responseMessage = "Data successfully loaded.";
-        return memberRepository.findAllByDeletedAtIsNull();
+        return result;
     }
 
     // Metode untuk mendapatkan data anggota berdasarkan id melalui repository
@@ -98,23 +100,5 @@ public class MemberService {
             result = "Sorry, member name can only filled by letters";
         }
         return result;
-    }
-
-    // Metode untuk menambahkan sample awal
-    private void seedData() {
-        Member member1 = new Member("Sarah Utami");
-        memberRepository.save(member1);
-
-        Member member2 = new Member("Hasan Abdullah");
-        memberRepository.save(member2);
-
-        Member member3 = new Member("Rina Kartika");
-        memberRepository.save(member3);
-
-        Member member4 = new Member("Budi Setiawan");
-        memberRepository.save(member4);
-
-        Member member5 = new Member("Maya Wijaya");
-        memberRepository.save(member5);
     }
 }

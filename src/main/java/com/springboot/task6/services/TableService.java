@@ -25,11 +25,13 @@ public class TableService {
 
     // Metode untuk mendapatkan semua daftar meja yang belum terhapus melalui repository
     public List<TableOrder> getTableOrders() {
-        if (repository.findAllByDeletedAtIsNull().isEmpty()) {
-            seedData();
+        List<TableOrder> result = repository.findAllByDeletedAtIsNull();
+        if (result.isEmpty()) {
+            responseMessage = "Data doesn't exists, please insert new data table.";
+        } else {
+            responseMessage = "Data successfully loaded.";
         }
-        responseMessage = "Data successfully loaded.";
-        return repository.findAllByDeletedAtIsNull();
+        return result;
     }
 
     // Metode untuk mendapatkan data meja berdasarkan id melalui repository
@@ -101,23 +103,5 @@ public class TableService {
         }
 
         return result;
-    }
-
-    // Metode untuk menambahkan sample awal
-    public void seedData() {
-        TableOrder tableOrder1 = new TableOrder("A1");
-        repository.save(tableOrder1);
-
-        TableOrder tableOrder2 = new TableOrder("A2");
-        repository.save(tableOrder2);
-
-        TableOrder tableOrder3 = new TableOrder("A3");
-        repository.save(tableOrder3);
-
-        TableOrder tableOrder4 = new TableOrder("A4");
-        repository.save(tableOrder4);
-
-        TableOrder tableOrder5 = new TableOrder("A5");
-        repository.save(tableOrder5);
     }
 }
