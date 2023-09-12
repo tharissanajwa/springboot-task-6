@@ -24,11 +24,13 @@ public class EmployeeService {
 
     // Metode untuk mendapatkan semua daftar pegawai yang belum terhapus melalui repository
     public List<Employee> getAllEmployee() {
-        if (employeeRepository.findAllByDeletedAtIsNull().isEmpty()) {
-            seedData();
+        List<Employee> result = employeeRepository.findAllByDeletedAtIsNull();
+        if (result.isEmpty()) {
+            responseMessage = "Data doesn't exists, please insert new data employee.";
+        } else {
+            responseMessage = "Data successfully loaded.";
         }
-        responseMessage = "Data successfully loaded.";
-        return employeeRepository.findAllByDeletedAtIsNull();
+        return result;
     }
 
     // Metode untuk mendapatkan data pegawai berdasarkan id melalui repository
@@ -97,23 +99,5 @@ public class EmployeeService {
             result = "Sorry, employee name can only filled by letters";
         }
         return result;
-    }
-
-    // Metode untuk menambahkan sample awal
-    private void seedData() {
-        Employee employee1 = new Employee("Ahmad Budi Santoso");
-        employeeRepository.save(employee1);
-
-        Employee employee2 = new Employee("Maria Dewi Suryani");
-        employeeRepository.save(employee2);
-
-        Employee employee3 = new Employee("Rizky Pratama Putra");
-        employeeRepository.save(employee3);
-
-        Employee employee4 = new Employee("Siti Aisyah Rahman");
-        employeeRepository.save(employee4);
-
-        Employee employee5 = new Employee("Fajar Hidayatullah");
-        employeeRepository.save(employee5);
     }
 }
