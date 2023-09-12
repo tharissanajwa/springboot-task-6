@@ -159,8 +159,6 @@ public class PaymentService {
                 result = "Payment cannot be made because the order has been paid.";
             } else if (!isDone) {
                 result =  "Payment cannot be made because not all order details are done.";
-            } else {
-
             }
         }
         return result;
