@@ -135,8 +135,7 @@ public class OrderService {
         Product product = productService.getProductById(productId);
 
         if (validateOrderDetailData(orderId, productId, qty).isEmpty()) {
-            int totalPrice = product.getPrice() * qty;
-            result = new OrderDetail(order, product, qty, totalPrice);
+            result = new OrderDetail(order, product, qty, product.getPrice());
             order.addOrderDetail(result); // add result obj to order obj
             int totalAmount = accumulateTotalAmount(order);
 
@@ -261,7 +260,7 @@ public class OrderService {
 
         for (int i = 0; i < order.getOrderDetails().size(); i++) { // iterate through list<OrderDetail> in Order obj
             OrderDetail detail = order.getOrderDetails().get(i);
-            int productPrice = detail.getProduct().getPrice();
+            int productPrice = detail.getPrice();
             int qty = detail.getQty();
             total += (productPrice * qty); // add price * qty to total variable for every iteration
         }
@@ -271,12 +270,7 @@ public class OrderService {
 
     // Metode untuk menghitung total point yang didapatkan member
     private int accumulatePoints(Order order) {
-        int pointFromOrder = order.getPointObtained(); // get point value from orderDetail.order
-        int pointToAdd = order.getTotalAmount() / 10;
-
-        pointFromOrder += pointToAdd; // accumulate existing point in Order obj with pointToAdd variable
-
-        return pointFromOrder;
+        return order.getTotalAmount() / 10;
     }
 
     // Metode untuk mendapatkan detail order berdasarkan orderId dan detailOrderId

@@ -29,8 +29,8 @@ public class OrderDetail {
     private Boolean isDone; // Status pesanan
     @Column(name = "qty")
     private Integer qty;
-    @Column(name = "total_amount")
-    private Integer totalAmount;
+    @Column(name = "price")
+    private Integer price;
     @JsonIgnore
     @Column(name = "created_at", columnDefinition = "DATE DEFAULT CURRENT_DATE")
     private Date createdAt;
@@ -44,11 +44,11 @@ public class OrderDetail {
     public OrderDetail() {
     }
 
-    public OrderDetail(Order order, Product product, int quantity, Integer totalAmount) {
+    public OrderDetail(Order order, Product product, Integer quantity, Integer price) {
         this.order = order;
         this.product = product;
         this.qty = quantity;
-        this.totalAmount = totalAmount;
+        this.price = price;
         this.isDone = false;
     }
 
@@ -92,12 +92,12 @@ public class OrderDetail {
         this.qty = qty;
     }
 
-    public Integer getTotalAmount() {
-        return totalAmount;
+    public Integer getPrice() {
+        return price;
     }
 
-    public void setTotalAmount(Integer totalAmount) {
-        this.totalAmount = totalAmount;
+    public void setPrice(Integer price) {
+        this.price = price;
     }
 
     public Date getCreatedAt() {
