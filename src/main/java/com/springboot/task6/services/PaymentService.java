@@ -124,14 +124,9 @@ public class PaymentService {
         Payment payment = getPaymentById(paymentId);
         if (payment != null) {
             Order order = orderService.getOrderById(payment.getOrder().getId());
-            int point = order.getPointObtained();
+            int point = payment.getPointUsed();
             if (order.getMember() != null) {
-                if (order.getPointObtained() <= 100) {
-                    order.getMember().minusPoints(point);
-                }
-                if (order.getMember().getPoint() > 100) {
-                    order.getMember().addPoints(point);
-                }
+                order.getMember().addPoints(point);
             }
 
             order.setIsPaid(false);
@@ -183,20 +178,17 @@ public class PaymentService {
         if (order.getMember() != null && pointUsed != null) {
             if (order.getMember().getPoint() == 0) {
                 responseMessage = "Sorry, member " + member.getName() + " don't have any points.";
-            } else if (pointUsed > 50) {
-                responseMessage = "Sorry, maximum point to use is 50.";
+            } else if (pointUsed > 50000) {
+                responseMessage = "Sorry, maximum point to use is 50000.";
             } else if (pointUsed > member.getPoint()) {
                 responseMessage = "Sorry, member " + member.getName() + " only have " + member.getPoint() + " points.";
             } else {
-                int totalToPointConversion = order.getTotalAmount() / 10;
+                int totalToPointConversion = order.getTotalAmount();
 
                 if (pointUsed > order.getTotalAmount()) {
                     responseMessage = "Sorry, point to use is maxed at " + totalToPointConversion + ".";
-                } else if (pointUsed < order.getTotalAmount()) {
-                    int difference = order.getTotalAmount() - pointUsed;
-                    responseMessage = "Sorry, your points conversion is " + pointUsed + " and total to pay is " + order.getTotalAmount() + ". Please pay " + difference + " to cashier.";
                 } else {
-                    discount = pointUsed * 1000;
+                    discount = pointUsed;
                     member.minusPoints(pointUsed);
                 }
             }

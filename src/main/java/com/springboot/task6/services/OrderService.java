@@ -117,6 +117,7 @@ public class OrderService {
         Order order = getOrderById(id);
 
         if (validateDeleteOrder(order).isEmpty()) {
+            order.getTable().setAvailable(true);
             order.setDeletedAt(new Date());
             orderRepository.save(order);
             result = true;
