@@ -18,11 +18,11 @@ public class MemberSeeder {
     @PostConstruct
     public void seed() {
         List<Member> members = new ArrayList<>(Arrays.asList(
-                new Member("Sarah Utami"),
-                new Member("Hasan Abdullah"),
-                new Member("Rina Kartika"),
-                new Member("Budi Setiawan"),
-                new Member("Maya Wijaya")
+                new Member("Sarah Utami", "08123456789"),
+                new Member("Hasan Abdullah", "08212345678"),
+                new Member("Rina Kartika", "08389876543"),
+                new Member("Budi Setiawan", "08775555555"),
+                new Member("Maya Wijaya", "08561234567")
         ));
 
         if (memberRepository.findAllByDeletedAtIsNullOrderByName().isEmpty()) {

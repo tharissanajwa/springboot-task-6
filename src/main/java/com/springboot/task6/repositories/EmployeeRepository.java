@@ -1,6 +1,7 @@
 package com.springboot.task6.repositories;
 
 import com.springboot.task6.model.Employee;
+import com.springboot.task6.model.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -9,4 +10,5 @@ import java.util.Optional;
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     List<Employee> findAllByDeletedAtIsNullOrderByName();
     Optional<Employee> findByIdAndDeletedAtIsNull(Long id);
+    Optional<Employee> findByPhoneAndDeletedAtIsNull(String phone);
 }

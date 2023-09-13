@@ -46,7 +46,7 @@ public class EmployeeController {
     // Metode untuk membuat pegawai baru dari fungsi yg telah dibuat di service
     @PostMapping
     public ResponseEntity<ApiResponse> insertEmployee(@RequestBody Employee employee) {
-        Employee employees = employeeService.insertEmployee(employee.getName());
+        Employee employees = employeeService.insertEmployee(employee.getName(), employee.getPhone());
         ApiResponse response = new ApiResponse(employeeService.getResponseMessage(), employees);
         HttpStatus httpStatus;
 
@@ -58,7 +58,7 @@ public class EmployeeController {
     // Metode untuk memperbarui informasi pegawai dari fungsi yg telah dibuat di service
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse> updateEmployee(@PathVariable("id") Long id, @RequestBody Employee employee) {
-        Employee employees = employeeService.updateEmployee(id, employee.getName());
+        Employee employees = employeeService.updateEmployee(id, employee.getName(), employee.getPhone());
         ApiResponse response = new ApiResponse(employeeService.getResponseMessage(), employees);
         HttpStatus httpStatus;
 

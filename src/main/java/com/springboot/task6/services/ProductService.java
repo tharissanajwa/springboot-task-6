@@ -48,7 +48,7 @@ public class ProductService {
     }
 
     // Metode untuk menambahkan barang ke dalam data melalui repository
-    public Product insertProduct(String name, Integer price) {
+    public Product insertProduct(String name, Integer price, String description) {
         Product result = null;
         String nameValidation = inputValidation(name);
         String priceValidation = inputValidationPrice(price);
@@ -58,7 +58,7 @@ public class ProductService {
         } else if (!priceValidation.isEmpty()) {
             responseMessage = priceValidation;
         } else {
-            result = new Product(Validation.inputTrim(name), price);
+            result = new Product(Validation.inputTrim(name), price, Validation.inputTrim(description));
             result.setCreatedAt(new Date());
             productRepository.save(result);
             responseMessage = "Data successfully added!";
@@ -67,7 +67,7 @@ public class ProductService {
     }
 
     // Metode untuk memperbarui informasi barang melalui repository
-    public Product updateProduct(Long id, String name, Integer price) {
+    public Product updateProduct(Long id, String name, Integer price, String description) {
         Product result = getProductById(id);
         String nameValidation = inputValidation(name);
         String priceValidation = inputValidationPrice(price);
@@ -82,6 +82,7 @@ public class ProductService {
             } else {
                 result.setName(Validation.inputTrim(name));
                 result.setPrice(price);
+                result.setDescription(Validation.inputTrim(description));
                 result.setUpdatedAt(new Date());
                 productRepository.save(result);
                 responseMessage = "Data successfully updated!";

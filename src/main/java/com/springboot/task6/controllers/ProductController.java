@@ -46,7 +46,7 @@ public class ProductController {
     // Metode untuk membuat barang baru dari fungsi yg telah dibuat di service
     @PostMapping("")
     public ResponseEntity<ApiResponse> insertProduct(@RequestBody Product product) {
-        Product newProduct = productService.insertProduct(product.getName(), product.getPrice());
+        Product newProduct = productService.insertProduct(product.getName(), product.getPrice(), product.getDescription());
         ApiResponse response = new ApiResponse(productService.getResponseMessage(), newProduct);
         HttpStatus httpStatus;
 
@@ -58,7 +58,7 @@ public class ProductController {
     // Metode untuk memperbarui informasi barang dari fungsi yg telah dibuat di service
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse> updateProduct(@PathVariable("id") Long id, @RequestBody Product product) {
-        Product products = productService.updateProduct(id, product.getName(), product.getPrice());
+        Product products = productService.updateProduct(id, product.getName(), product.getPrice(), product.getDescription());
         ApiResponse response = new ApiResponse(productService.getResponseMessage(), products);
         HttpStatus httpStatus;
 

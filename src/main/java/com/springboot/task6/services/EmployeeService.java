@@ -1,7 +1,7 @@
 package com.springboot.task6.services;
 
-import com.springboot.task6.repositories.EmployeeRepository;
 import com.springboot.task6.model.Employee;
+import com.springboot.task6.repositories.EmployeeRepository;
 import com.springboot.task6.utilities.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,12 +45,16 @@ public class EmployeeService {
     }
 
     // Metode untuk menambahkan pegawai baru ke dalam data melalui repository
-    public Employee insertEmployee(String name) {
+    public Employee insertEmployee(String name, String phone) {
         Employee result = null;
-        if (!inputValidation(name).isEmpty()) {
-            responseMessage = inputValidation(name);
+        String validateName = Validation.inputTrim(name);
+        String validatePhone = Validation.inputTrim(phone);
+        if (!inputValidation(validateName).isEmpty()) {
+            responseMessage = inputValidation(validateName);
+        } else if (!inputPhoneValidation(validatePhone).isEmpty()) {
+            responseMessage = inputPhoneValidation(validatePhone);
         } else {
-            result = new Employee(Validation.inputTrim(name));
+            result = new Employee(validateName, validatePhone);
             result.setCreatedAt(new Date());
             employeeRepository.save(result);
             responseMessage = "Data successfully added!";
@@ -59,14 +63,20 @@ public class EmployeeService {
     }
 
     // Metode untuk memperbarui informasi pegawai melalui repository
-    public Employee updateEmployee(Long id, String name) {
+    public Employee updateEmployee(Long id, String name, String phone) {
         Employee result = getEmployeeById(id);
+        String validateName = Validation.inputTrim(name);
+        String validatePhone = Validation.inputTrim(phone);
         if (result != null) {
-            if (!inputValidation(name).isEmpty()) {
-                responseMessage = inputValidation(name);
+            if (!inputValidation(validateName).isEmpty()) {
+                responseMessage = inputValidation(validateName);
+                return null;
+            } else if (!inputPhoneValidation(validatePhone).isEmpty()) {
+                responseMessage = inputPhoneValidation(validatePhone);
                 return null;
             } else {
-                result.setName(Validation.inputTrim(name));
+                result.setName(validateName);
+                result.setPhone(validatePhone);
                 result.setUpdatedAt(new Date());
                 employeeRepository.save(result);
                 responseMessage = "Data successfully updated!";
@@ -97,6 +107,18 @@ public class EmployeeService {
         }
         if (Validation.inputCheck(Validation.inputTrim(name)) == 2) {
             result = "Sorry, employee name can only filled by letters";
+        }
+        return result;
+    }
+
+    private String inputPhoneValidation(String phone) {
+        String result = "";
+        Optional<Employee> employeeExist = employeeRepository.findByPhoneAndDeletedAtIsNull(phone);
+
+        if (employeeExist.isPresent()) {
+            result = "Sorry, employee phone already exists.";
+        } else if (!phone.matches("^\\d+$") && !(phone.length() >= 10 && phone.length() <= 13)) {
+            result = "Invalid phone number. Please enter a valid phone number.";
         }
         return result;
     }

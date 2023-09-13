@@ -95,11 +95,14 @@ public class TableService {
     // Metode untuk memvalidasi inputan pengguna
     private String inputValidation(String name) {
         String result = "";
+        Optional<TableOrder> tableExist = repository.findByNameAndDeletedAtIsNull(Validation.inputTrim(name));
 
         if (Validation.inputContainsNumber(Validation.inputTrim(name)) == 1) {
             result = "Sorry, table name cannot be blank.";
         } else if (Validation.inputContainsNumber(Validation.inputTrim(name)) == 2) {
-            result = "Sorry, table name can only filled by letters and numbers";
+            result = "Sorry, table name can only filled by letters and numbers.";
+        } else if (tableExist.isPresent()) {
+            result = "Sorry, table name already exists.";
         }
 
         return result;
