@@ -17,6 +17,7 @@ public class EmployeeSeeder {
 
     @PostConstruct
     public void seed() {
+        // Daftar karyawan yang akan disimpan dalam database
         List<Employee> employees = new ArrayList<>(Arrays.asList(
                 new Employee("Ahmad Budi Santoso", "081234567890"),
                 new Employee("Maria Dewi Suryani", "085612345678"),
@@ -25,7 +26,9 @@ public class EmployeeSeeder {
                 new Employee("Fajar Hidayatullah", "087788889999")
         ));
 
+        // Cek apakah database sudah berisi data karyawan atau tidak
         if (employeeRepository.findAllByDeletedAtIsNullOrderByName().isEmpty()) {
+            // Jika tidak ada data, maka simpan data karyawan ke dalam database
             employeeRepository.saveAll(employees);
         }
     }
