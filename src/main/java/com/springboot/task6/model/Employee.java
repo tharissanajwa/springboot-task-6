@@ -19,6 +19,9 @@ public class Employee {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+
+    private String phone;
+
     @JsonIgnore
     @OneToMany(mappedBy = "employee")
     private List<Order> orders;
@@ -32,8 +35,9 @@ public class Employee {
     public Employee() {
     }
 
-    public Employee(String name) {
+    public Employee(String name, String phone) {
         this.name = name;
+        this.phone = phone;
         this.createdAt = new Date();
     }
 
@@ -47,6 +51,14 @@ public class Employee {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     @JsonIgnore

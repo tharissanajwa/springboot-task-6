@@ -20,6 +20,9 @@ public class Member {
     private Long id;
     private String name;
     private Integer point;
+
+    private String phone;
+
     @JsonIgnore
     @OneToMany(mappedBy = "member")
     private List<Order> orders;
@@ -37,8 +40,9 @@ public class Member {
 
     }
 
-    public Member(String name) {
+    public Member(String name, String phone) {
         this.name = name;
+        this.phone = phone;
         this.createdAt = new Date();
         this.point = 0;
     }
@@ -57,6 +61,14 @@ public class Member {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public int getPoint() {

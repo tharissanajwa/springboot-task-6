@@ -18,11 +18,11 @@ public class EmployeeSeeder {
     @PostConstruct
     public void seed() {
         List<Employee> employees = new ArrayList<>(Arrays.asList(
-                new Employee("Ahmad Budi Santoso"),
-                new Employee("Maria Dewi Suryani"),
-                new Employee("Rizky Pratama Putra"),
-                new Employee("Siti Aisyah Rahman"),
-                new Employee("Fajar Hidayatullah")
+                new Employee("Ahmad Budi Santoso", "081234567890"),
+                new Employee("Maria Dewi Suryani", "085612345678"),
+                new Employee("Rizky Pratama Putra", "081398765432"),
+                new Employee("Siti Aisyah Rahman", "082255555555"),
+                new Employee("Fajar Hidayatullah", "087788889999")
         ));
 
         if (employeeRepository.findAllByDeletedAtIsNullOrderByName().isEmpty()) {

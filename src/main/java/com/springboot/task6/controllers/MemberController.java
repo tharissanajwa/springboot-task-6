@@ -46,7 +46,7 @@ public class MemberController {
     // Metode untuk membuat anggota baru dari fungsi yg telah dibuat di service
     @PostMapping("")
     public ResponseEntity<ApiResponse> insertMember(@RequestBody Member member) {
-        Member members = memberService.insertMember(member.getName());
+        Member members = memberService.insertMember(member.getName(), member.getPhone());
         ApiResponse response = new ApiResponse(memberService.getResponseMessage(), members);
         HttpStatus httpStatus;
 
@@ -58,7 +58,7 @@ public class MemberController {
     // Metode untuk memperbarui informasi anggota dari fungsi yg telah dibuat di service
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse> updateMember(@PathVariable("id") Long id, @RequestBody Member member) {
-        Member members = memberService.updateMember(id, member.getName());
+        Member members = memberService.updateMember(id, member.getName(), member.getPhone());
         ApiResponse response = new ApiResponse(memberService.getResponseMessage(), members);
         HttpStatus httpStatus;
 
