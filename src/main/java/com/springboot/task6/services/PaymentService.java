@@ -1,5 +1,6 @@
 package com.springboot.task6.services;
 
+import com.springboot.task6.model.Member;
 import com.springboot.task6.model.Order;
 import com.springboot.task6.model.OrderDetail;
 import com.springboot.task6.model.Payment;
@@ -53,25 +54,31 @@ public class PaymentService {
     }
 
     // Metode untuk membuat pembayaran baru
-    public Payment insertPayment(Integer totalPaid, Long orderId) {
+    public Payment insertPayment(Integer totalPaid, Long orderId, Integer pointUsed) {
         if (!isPaymentValid(orderId).isEmpty()) {
             responseMessage = isPaymentValid(orderId);
             return null;
         } else {
             Order order = orderService.getOrderById(orderId);
-            Integer discount = calculateDiscount(orderId);
+            Integer discount = calculateDiscount(orderId, pointUsed);
             Integer change = calculateChange(totalPaid, order.getTotalAmount(), discount);
+
             if (change == null) {
                 return null;
             } else if (order.getOrderDetails().isEmpty()) {
                 responseMessage = "Sorry, order with ID " + orderId + " doesn't have any product yet.";
                 return null;
             } else {
-                Payment result = new Payment(totalPaid, discount, order);
+                Payment result = new Payment(totalPaid, discount, order, pointUsed);
                 result.setChange(change);
                 result.setCreatedAt(new Date());
+                result.setDiscount(discount);
                 paymentRepository.save(result);
 
+                int pointToAdd = order.getPointObtained();
+                if (pointUsed == null || pointUsed == 0) {
+                    order.getMember().addPoints(pointToAdd);
+                }
                 order.setIsPaid(true);
                 TableOrder tableOrder = order.getTable();
                 tableOrder.setAvailable(true);
@@ -84,15 +91,18 @@ public class PaymentService {
     }
 
     // Metode untuk mengubah pembayaran
-    public Payment updatePayment(Integer totalPaid, Long orderId) {
+    public Payment updatePayment(Integer totalPaid, Long orderId, Integer pointUsed) {
         Order order = orderService.getOrderById(orderId);
         if (order == null) {
             responseMessage = "Sorry, order is not found.";
             return null;
         } else {
-            Integer discount = calculateDiscount(orderId);
+            Integer discount = calculateDiscount(orderId, pointUsed);
             Integer change = calculateChange(totalPaid, order.getTotalAmount(), discount);
-            if (change == null) {
+
+            if (discount == null) {
+                return null;
+            } else if (change == null) {
                 return null;
             } else {
                 Payment result = getPaymentById(order.getPayment().getId());
@@ -150,43 +160,65 @@ public class PaymentService {
         } else {
             boolean isDone = true;
             for (OrderDetail orderDetail : order.getOrderDetails()) {
-                if (!orderDetail.isDone()) {
+                if (!orderDetail.getDone()) {
                     isDone = false;
+                    break;
                 }
             }
 
             if (order.isPaid()) {
                 result = "Payment cannot be made because the order has been paid.";
             } else if (!isDone) {
-                result =  "Payment cannot be made because not all order details are done.";
+                result = "Payment cannot be made because not all order details are done.";
             }
         }
         return result;
     }
 
     // Metode untuk menghitung diskon dari point member yang tersedia untuk insert payment
-    private Integer calculateDiscount(Long orderId) {
+    private Integer calculateDiscount(Long orderId, Integer pointUsed) {
         Order order = orderService.getOrderById(orderId);
-        int discount = 0;
-        int point = order.getPointObtained();
-        if (order.getMember() != null) {
-            order.getMember().addPoints(point);
-            if (order.getMember().getPoint() > 100) {
-                discount = point * 100;
-                order.getMember().minusPoints(point);
+        Member member = order.getMember();
+        Integer discount = null;
+
+        if (order.getMember() != null && pointUsed != null) {
+            if (order.getMember().getPoint() == 0) {
+                responseMessage = "Sorry, member " + member.getName() + " don't have any points.";
+            } else if (pointUsed > 50) {
+                responseMessage = "Sorry, maximum point to use is 50.";
+            } else if (pointUsed > member.getPoint()) {
+                responseMessage = "Sorry, member " + member.getName() + " only have " + member.getPoint() + " points.";
+            } else {
+                int totalToPointConversion = order.getTotalAmount() / 10;
+
+                if (pointUsed > order.getTotalAmount()) {
+                    responseMessage = "Sorry, point to use is maxed at " + totalToPointConversion + ".";
+                } else if (pointUsed < order.getTotalAmount()) {
+                    int difference = order.getTotalAmount() - pointUsed;
+                    responseMessage = "Sorry, your points conversion is " + pointUsed + " and total to pay is " + order.getTotalAmount() + ". Please pay " + difference + " to cashier.";
+                } else {
+                    discount = pointUsed * 1000;
+                    member.minusPoints(pointUsed);
+                }
             }
+        } else {
+            discount = 0;
         }
+
         return discount;
     }
 
     // Metode untuk menghitung kembalian dari total yang sudah dibayarkan
     private Integer calculateChange(Integer totalPaid, Integer totalAmount, Integer discount) {
         Integer result = null;
-        int totals = totalAmount - discount;
-        if (totalPaid < totals) {
-            responseMessage = "Sorry, the total paid must exceed the total amount.";
-        } else {
-            result = totalPaid - totals;
+
+        if (discount != null) {
+            int totals = totalAmount - discount;
+            if (totalPaid < totals) {
+                responseMessage = "Sorry, the total paid must exceed the total amount.";
+            } else {
+                result = totalPaid - totals;
+            }
         }
         return result;
     }

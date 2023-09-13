@@ -27,13 +27,11 @@ public class OrderController {
 
     // Metode untuk mengambil semua data order dari fungsi yg telah dibuat di service
     @GetMapping("")
-    public ResponseEntity<ApiResponse> getAllOrder(@RequestParam boolean is_paid) {
+    public ResponseEntity<ApiResponse> getAllOrder(@RequestParam(name = "is_paid", defaultValue = "false") Boolean isPaid) {
         List<Order> orders;
-        if (is_paid) {
-            orders = orderService.getPaidOrders();
-        } else {
-            orders = orderService.getAllOrder();
-        }
+
+        if (isPaid) orders = orderService.getPaidOrders();
+        else orders = orderService.getAllOrder();
 
         ApiResponse response = new ApiResponse(orderService.getResponseMessage(), orders);
         return ResponseEntity.status(HttpStatus.OK).body(response);
