@@ -34,7 +34,6 @@ public class Payment {
     private Date updatedAt;
     @Column(name = "deleted_at", columnDefinition = "DATE DEFAULT NULL")
     private Date deletedAt;
-
     @OneToOne
     @JoinColumn(name = "order_id")
     private Order order;

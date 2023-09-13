@@ -20,9 +20,7 @@ public class Member {
     private Long id;
     private String name;
     private Integer point;
-
     private String phone;
-
     @JsonIgnore
     @OneToMany(mappedBy = "member")
     private List<Order> orders;

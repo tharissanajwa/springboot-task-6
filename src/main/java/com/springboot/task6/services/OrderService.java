@@ -20,22 +20,16 @@ import java.util.Optional;
 public class OrderService {
     @Autowired
     private OrderRepository orderRepository;
-
     @Autowired
     private OrderDetailRepository orderDetailRepository;
-
     @Autowired
     private TableRepository tableRepository;
-
     @Autowired
     private MemberService memberService;
-
     @Autowired
     private EmployeeService employeeService;
-
     @Autowired
     private TableService tableService;
-
     @Autowired
     private ProductService productService;
 

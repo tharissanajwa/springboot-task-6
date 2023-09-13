@@ -112,11 +112,11 @@ public class OrderController {
     // Metode untuk menghapus product(detail order) berdasarkan id detail order yg diinputkan
     @DeleteMapping("/{id}/details/{detailOrderId}")
     public ResponseEntity<ApiResponse> deleteOrderDetail(@PathVariable("id") Long id, @PathVariable("detailOrderId") Long detailOrderId) {
-        boolean orderDetail = orderService.deleteOrderDetail(id, detailOrderId);
+        boolean isValid = orderService.deleteOrderDetail(id, detailOrderId);
         ApiResponse response = new ApiResponse(orderService.getResponseMessage(), null);
         HttpStatus httpStatus;
 
-        if (orderDetail) httpStatus = HttpStatus.OK;
+        if (isValid) httpStatus = HttpStatus.OK;
         else httpStatus = HttpStatus.BAD_REQUEST;
         return ResponseEntity.status(httpStatus).body(response);
     }

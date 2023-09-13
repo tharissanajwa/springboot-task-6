@@ -70,11 +70,11 @@ public class EmployeeController {
     // Metode untuk menghapus pegawai berdasarkan dari fungsi yg telah dibuat di service
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse> deleteEmployee(@PathVariable("id") Long id) {
-        boolean employees = employeeService.deleteEmployee(id);
+        boolean isValid = employeeService.deleteEmployee(id);
         ApiResponse response = new ApiResponse(employeeService.getResponseMessage(), null);
         HttpStatus httpStatus;
 
-        if (employees) httpStatus = HttpStatus.OK;
+        if (isValid) httpStatus = HttpStatus.OK;
         else httpStatus = HttpStatus.BAD_REQUEST;
         return ResponseEntity.status(httpStatus).body(response);
     }

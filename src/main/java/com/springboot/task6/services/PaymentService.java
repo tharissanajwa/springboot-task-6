@@ -18,10 +18,8 @@ import java.util.Optional;
 public class PaymentService {
     @Autowired
     private PaymentRepository paymentRepository;
-
     @Autowired
     private OrderRepository orderRepository;
-
     @Autowired
     private OrderService orderService;
 
@@ -34,12 +32,13 @@ public class PaymentService {
 
     // Metode untuk mengambil semua data pembayaran
     public List<Payment> getAllPayment() {
-        if (paymentRepository.findAllByDeletedAtIsNullOrderByIdDesc().isEmpty()) {
+        List<Payment> result = paymentRepository.findAllByDeletedAtIsNullOrderByIdDesc();
+        if (result.isEmpty()) {
             responseMessage = "Data doesn't exists, please insert new data payment.";
         } else {
             responseMessage = "Data successfully loaded.";
         }
-        return paymentRepository.findAllByDeletedAtIsNullOrderByIdDesc();
+        return result;
     }
 
     // Metode untuk mengambil data pembayaran berdasarkan id

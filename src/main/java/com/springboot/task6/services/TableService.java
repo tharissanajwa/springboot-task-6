@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -36,11 +35,11 @@ public class TableService {
 
     // Metode untuk mendapatkan data meja berdasarkan id melalui repository
     public TableOrder getTableOrderById(Long id) {
-        Optional<TableOrder> tableOrder = repository.findByIdAndDeletedAtIsNull(id);
+        Optional<TableOrder> result = repository.findByIdAndDeletedAtIsNull(id);
 
-        if (tableOrder.isPresent()) {
+        if (result.isPresent()) {
             responseMessage = "Data successfully loaded.";
-            return tableOrder.get();
+            return result.get();
         }
         responseMessage = "Sorry, ID Table is not found.";
         return null;
@@ -48,34 +47,34 @@ public class TableService {
 
     // Metode untuk menambahkan data meja baru melalui repository
     public TableOrder inserTableOrder(String name) {
-        TableOrder newTableOrder = null;
+        TableOrder result = null;
 
         if (!inputValidation(name).isEmpty()) {
             responseMessage = inputValidation(name);
         } else {
-            newTableOrder = new TableOrder(Validation.inputTrim(name));
-            repository.save(newTableOrder);
+            result = new TableOrder(Validation.inputTrim(name));
+            repository.save(result);
             responseMessage = "Data successfully added.";
         }
-        return newTableOrder;
+        return result;
     }
 
     // Metode untuk memperbarui informasi meja melalui repository
     public TableOrder updateTableOrder(Long id, String name) {
-        TableOrder tableOrder = getTableOrderById(id);
+        TableOrder result = getTableOrderById(id);
 
-        if (tableOrder != null) {
+        if (result != null) {
             if (!inputValidation(name).equals("")) {
                 responseMessage = inputValidation(name);
                 return null;
             } else {
-                tableOrder.setName(Validation.inputTrim(name));
-                repository.save(tableOrder);
+                result.setName(Validation.inputTrim(name));
+                repository.save(result);
                 responseMessage = "Data successfully updated!";
             }
         }
 
-        return tableOrder;
+        return result;
     }
 
     // Metode untuk menghapus data meja secara soft delete melalui repository
