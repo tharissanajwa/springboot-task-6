@@ -19,11 +19,11 @@ public class ProductSeeder {
     @PostConstruct
     public void seed() {
         List<Product> products = new ArrayList<>(Arrays.asList(
-                new Product("Nasi Timbel Sunda", 40_000),
-                new Product("Sate Maranggi", 30_000),
-                new Product("Pepes Ikan Mujair", 45_000),
-                new Product("Terong Bacem", 20_000),
-                new Product("Karedok", 25_000)
+                new Product("Nasi Timbel Sunda", 40_000, "Nasi beraroma daun pisang dengan aneka lauk tradisional."),
+                new Product("Sate Maranggi", 30_000, " Sate sapi berbumbu khas Sunda dengan saus kacang."),
+                new Product("Pepes Ikan Mujair", 45_000, " Ikan mujair dibungkus dalam daun pisang dan dimasak dengan rempah khas Sunda."),
+                new Product("Terong Bacem", 20_000, "Terong digoreng dengan kuah manis berbumbu."),
+                new Product("Karedok", 25_000, "Salad sayuran segar dengan saus kacang pedas khas sunda.")
         ));
 
         if (productRepository.findAllByDeletedAtIsNullOrderByName().isEmpty()) {
