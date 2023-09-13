@@ -39,25 +39,25 @@ public class PaymentController {
     // Metode untuk membuat pembayaran baru dari fungsi yg telah dibuat di service
     @PostMapping("/orders/{orderId}")
     public ResponseEntity<ApiResponse> insertPayment(@PathVariable("orderId") Long orderId, @RequestBody Payment payment) {
-        Payment payments = paymentService.insertPayment(payment.getTotalPaid(), orderId);
+        Payment payments = paymentService.insertPayment(payment.getTotalPaid(), orderId, payment.getPointUsed());
         ApiResponse response = new ApiResponse(paymentService.getResponseMessage(), payments);
         HttpStatus httpStatus;
 
         if (payments != null) httpStatus = HttpStatus.OK;
         else httpStatus = HttpStatus.BAD_REQUEST;
-        return  ResponseEntity.status(httpStatus).body(response);
+        return ResponseEntity.status(httpStatus).body(response);
     }
 
     // Metode untuk mengubah pembayaran dari fungsi yg telah dibuat di service
     @PutMapping("/orders/{orderId}")
     public ResponseEntity<ApiResponse> updatePayment(@PathVariable("orderId") Long orderId, @RequestBody Payment payment) {
-        Payment payments = paymentService.updatePayment(payment.getTotalPaid(), orderId);
+        Payment payments = paymentService.updatePayment(payment.getTotalPaid(), orderId, payment.getPointUsed());
         ApiResponse response = new ApiResponse(paymentService.getResponseMessage(), payments);
         HttpStatus httpStatus;
 
         if (payments != null) httpStatus = HttpStatus.OK;
         else httpStatus = HttpStatus.BAD_REQUEST;
-        return  ResponseEntity.status(httpStatus).body(response);
+        return ResponseEntity.status(httpStatus).body(response);
     }
 
     // Metode untuk menghapus pembayaran berdasarkan id payment dari fungsi yg telah dibuat di service

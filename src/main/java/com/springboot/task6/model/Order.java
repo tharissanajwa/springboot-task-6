@@ -33,6 +33,7 @@ public class Order {
     private List<OrderDetail> orderDetails;
     @Column(name = "total_amount")
     private Integer totalAmount;
+    @Column(name = "note", columnDefinition = "TEXT")
     private String note;
     @Column(name = "is_paid")
     private Boolean isPaid;
