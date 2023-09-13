@@ -17,6 +17,7 @@ public class MemberSeeder {
 
     @PostConstruct
     public void seed() {
+        // Daftar anggota yang akan disimpan dalam database
         List<Member> members = new ArrayList<>(Arrays.asList(
                 new Member("Sarah Utami", "08123456789"),
                 new Member("Hasan Abdullah", "08212345678"),
@@ -25,7 +26,9 @@ public class MemberSeeder {
                 new Member("Maya Wijaya", "08561234567")
         ));
 
+        // Cek apakah database sudah berisi data anggota atau tidak
         if (memberRepository.findAllByDeletedAtIsNullOrderByName().isEmpty()) {
+            // Jika tidak ada data, maka simpan data anggota ke dalam database
             memberRepository.saveAll(members);
         }
     }

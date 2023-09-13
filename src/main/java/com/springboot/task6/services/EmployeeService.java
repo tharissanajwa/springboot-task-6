@@ -111,6 +111,7 @@ public class EmployeeService {
         return result;
     }
 
+    // Metode untuk memvalidasi nomor telepon inputan pengguna
     private String inputPhoneValidation(String phone) {
         String result = "";
         Optional<Employee> employeeExist = employeeRepository.findByPhoneAndDeletedAtIsNull(phone);

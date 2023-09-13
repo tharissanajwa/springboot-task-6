@@ -17,6 +17,7 @@ public class TableSeeder {
 
     @PostConstruct
     public void seed() {
+        // Daftar pesanan meja yang akan disimpan dalam database
         List<TableOrder> tableOrders = new ArrayList<>(Arrays.asList(
                 new TableOrder("A1"),
                 new TableOrder("A2"),
@@ -25,7 +26,9 @@ public class TableSeeder {
                 new TableOrder("A5")
         ));
 
+        // Cek apakah database sudah berisi data pesanan meja atau tidak
         if (tableRepository.findAllByDeletedAtIsNullOrderByName().isEmpty()) {
+            // Jika tidak ada data, maka simpan data pesanan meja ke dalam database
             tableRepository.saveAll(tableOrders);
         }
     }

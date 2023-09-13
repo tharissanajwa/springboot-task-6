@@ -111,6 +111,7 @@ public class MemberService {
         return result;
     }
 
+    // Metode untuk memvalidasi nomor telepon inputan pengguna
     private String inputPhoneValidation(String phone) {
         String result = "";
         Optional<Member> memberExist = memberRepository.findByPhoneAndDeletedAtIsNull(Validation.inputTrim(phone));
