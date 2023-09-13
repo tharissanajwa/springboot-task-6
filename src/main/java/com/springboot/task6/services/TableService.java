@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -25,56 +24,57 @@ public class TableService {
 
     // Metode untuk mendapatkan semua daftar meja yang belum terhapus melalui repository
     public List<TableOrder> getTableOrders() {
-        if (repository.findAllByDeletedAtIsNull().isEmpty()) {
-            seedData();
+        List<TableOrder> result = repository.findAllByDeletedAtIsNullOrderByName();
+        if (result.isEmpty()) {
+            responseMessage = "Data doesn't exists, please insert new data table.";
+        } else {
+            responseMessage = "Data successfully loaded.";
         }
-        responseMessage = "Data successfully loaded.";
-        return repository.findAllByDeletedAtIsNull();
+        return result;
     }
 
     // Metode untuk mendapatkan data meja berdasarkan id melalui repository
     public TableOrder getTableOrderById(Long id) {
-        Optional<TableOrder> tableOrder = repository.findByIdAndDeletedAtIsNull(id);
+        Optional<TableOrder> result = repository.findByIdAndDeletedAtIsNull(id);
 
-        if (tableOrder.isPresent()) {
+        if (result.isPresent()) {
             responseMessage = "Data successfully loaded.";
-            return tableOrder.get();
-        } else {
-            responseMessage = "Sorry, ID Table is not found.";
-            return null;
+            return result.get();
         }
+        responseMessage = "Sorry, ID Table is not found.";
+        return null;
     }
 
     // Metode untuk menambahkan data meja baru melalui repository
     public TableOrder inserTableOrder(String name) {
-        TableOrder newTableOrder = null;
+        TableOrder result = null;
 
-        if (!Objects.equals(inputValidation(name), "")) {
+        if (!inputValidation(name).isEmpty()) {
             responseMessage = inputValidation(name);
         } else {
-            newTableOrder = new TableOrder(Validation.inputTrim(name));
-            repository.save(newTableOrder);
+            result = new TableOrder(Validation.inputTrim(name));
+            repository.save(result);
             responseMessage = "Data successfully added.";
         }
-        return newTableOrder;
+        return result;
     }
 
     // Metode untuk memperbarui informasi meja melalui repository
     public TableOrder updateTableOrder(Long id, String name) {
-        TableOrder tableOrder = getTableOrderById(id);
+        TableOrder result = getTableOrderById(id);
 
-        if (tableOrder != null) {
+        if (result != null) {
             if (!inputValidation(name).equals("")) {
                 responseMessage = inputValidation(name);
                 return null;
             } else {
-                tableOrder.setName(Validation.inputTrim(name));
-                repository.save(tableOrder);
+                result.setName(Validation.inputTrim(name));
+                repository.save(result);
                 responseMessage = "Data successfully updated!";
             }
         }
 
-        return tableOrder;
+        return result;
     }
 
     // Metode untuk menghapus data meja secara soft delete melalui repository
@@ -94,32 +94,16 @@ public class TableService {
     // Metode untuk memvalidasi inputan pengguna
     private String inputValidation(String name) {
         String result = "";
+        Optional<TableOrder> tableExist = repository.findByNameAndDeletedAtIsNull(Validation.inputTrim(name));
 
         if (Validation.inputContainsNumber(Validation.inputTrim(name)) == 1) {
             result = "Sorry, table name cannot be blank.";
         } else if (Validation.inputContainsNumber(Validation.inputTrim(name)) == 2) {
-            result = "Sorry, table name can only filled by letters and numbers";
+            result = "Sorry, table name can only filled by letters and numbers.";
+        } else if (tableExist.isPresent()) {
+            result = "Sorry, table name already exists.";
         }
 
         return result;
-    }
-
-    // Metode untuk menambahkan sample awal
-    public void seedData() {
-        // database seeder
-        TableOrder tableOrder1 = new TableOrder("A1");
-        repository.save(tableOrder1);
-
-        TableOrder tableOrder2 = new TableOrder("A2");
-        repository.save(tableOrder2);
-
-        TableOrder tableOrder3 = new TableOrder("A3");
-        repository.save(tableOrder3);
-
-        TableOrder tableOrder4 = new TableOrder("A4");
-        repository.save(tableOrder4);
-
-        TableOrder tableOrder5 = new TableOrder("A5");
-        repository.save(tableOrder5);
     }
 }

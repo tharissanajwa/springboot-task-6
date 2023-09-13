@@ -27,13 +27,11 @@ public class OrderController {
 
     // Metode untuk mengambil semua data order dari fungsi yg telah dibuat di service
     @GetMapping("")
-    public ResponseEntity<ApiResponse> getAllOrder(@RequestParam boolean is_paid) {
+    public ResponseEntity<ApiResponse> getAllOrder(@RequestParam(name = "is_paid", defaultValue = "false") Boolean isPaid) {
         List<Order> orders;
-        if (is_paid) {
-            orders = orderService.getPaidOrders();
-        } else {
-            orders = orderService.getAllOrder();
-        }
+
+        if (isPaid) orders = orderService.getPaidOrders();
+        else orders = orderService.getAllOrder();
 
         ApiResponse response = new ApiResponse(orderService.getResponseMessage(), orders);
         return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -114,11 +112,11 @@ public class OrderController {
     // Metode untuk menghapus product(detail order) berdasarkan id detail order yg diinputkan
     @DeleteMapping("/{id}/details/{detailOrderId}")
     public ResponseEntity<ApiResponse> deleteOrderDetail(@PathVariable("id") Long id, @PathVariable("detailOrderId") Long detailOrderId) {
-        boolean orderDetail = orderService.deleteOrderDetail(id, detailOrderId);
+        boolean isValid = orderService.deleteOrderDetail(id, detailOrderId);
         ApiResponse response = new ApiResponse(orderService.getResponseMessage(), null);
         HttpStatus httpStatus;
 
-        if (orderDetail) httpStatus = HttpStatus.OK;
+        if (isValid) httpStatus = HttpStatus.OK;
         else httpStatus = HttpStatus.BAD_REQUEST;
         return ResponseEntity.status(httpStatus).body(response);
     }

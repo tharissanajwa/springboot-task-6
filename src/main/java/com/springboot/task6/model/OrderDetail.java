@@ -18,20 +18,19 @@ public class OrderDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "order_id", referencedColumnName = "id")
     private Order order;
-
     @ManyToOne
     @JoinColumn(name = "product_id", referencedColumnName = "id")
     private Product product;
-
-    @Column(name = "is_done", columnDefinition = "BOOLEAN DEFAULT FALSE")
-    private boolean isDone; // Status pesanan
-    private int qty;
-
+    @Column(name = "is_done")
+    private Boolean isDone; // Status pesanan
+    @Column(name = "qty")
+    private Integer qty;
+    @Column(name = "price")
+    private Integer price;
     @JsonIgnore
     @Column(name = "created_at", columnDefinition = "DATE DEFAULT CURRENT_DATE")
     private Date createdAt;
@@ -45,10 +44,12 @@ public class OrderDetail {
     public OrderDetail() {
     }
 
-    public OrderDetail(Order order, Product product, int quantity) {
+    public OrderDetail(Order order, Product product, Integer quantity, Integer price) {
         this.order = order;
         this.product = product;
         this.qty = quantity;
+        this.price = price;
+        this.isDone = false;
     }
 
     public Long getId() {
@@ -75,20 +76,28 @@ public class OrderDetail {
         this.product = product;
     }
 
-    public boolean isDone() {
+    public Boolean getDone() {
         return isDone;
     }
 
-    public void setDone(boolean done) {
+    public void setDone(Boolean done) {
         isDone = done;
     }
 
-    public int getQty() {
+    public Integer getQty() {
         return qty;
     }
 
-    public void setQty(int quantity) {
-        this.qty = quantity;
+    public void setQty(Integer qty) {
+        this.qty = qty;
+    }
+
+    public Integer getPrice() {
+        return price;
+    }
+
+    public void setPrice(Integer price) {
+        this.price = price;
     }
 
     public Date getCreatedAt() {

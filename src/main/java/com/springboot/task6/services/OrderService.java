@@ -8,6 +8,7 @@ import com.springboot.task6.model.Product;
 import com.springboot.task6.model.TableOrder;
 import com.springboot.task6.repositories.OrderDetailRepository;
 import com.springboot.task6.repositories.OrderRepository;
+import com.springboot.task6.repositories.TableRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,19 +20,16 @@ import java.util.Optional;
 public class OrderService {
     @Autowired
     private OrderRepository orderRepository;
-
     @Autowired
     private OrderDetailRepository orderDetailRepository;
-
+    @Autowired
+    private TableRepository tableRepository;
     @Autowired
     private MemberService memberService;
-
     @Autowired
     private EmployeeService employeeService;
-
     @Autowired
     private TableService tableService;
-
     @Autowired
     private ProductService productService;
 
@@ -44,7 +42,7 @@ public class OrderService {
 
     // Metode untuk mendapatkan semua daftar order yang belum terhapus melalui repository
     public List<Order> getAllOrder() {
-        List<Order> orders = orderRepository.findAllByDeletedAtIsNull();
+        List<Order> orders = orderRepository.findAllByDeletedAtIsNullOrderByIdDesc();
         if (orders.isEmpty()) {
             responseMessage = "Data doesn't exists, please insert new data order.";
         } else {
@@ -55,7 +53,7 @@ public class OrderService {
 
     // Metode untuk mendapatkan semua daftar order yang belum terhapus dan sudah dibayar (rekap pencatatan transaksi) melalui repository
     public List<Order> getPaidOrders() {
-        List<Order> orders = orderRepository.findAllByDeletedAtIsNullAndIsPaidTrue();
+        List<Order> orders = orderRepository.findAllByDeletedAtIsNullAndIsPaidTrueOrderByIdDesc();
         if (orders.isEmpty()) {
             responseMessage = "Data doesn't exists, please insert new data order.";
         } else {
@@ -71,10 +69,9 @@ public class OrderService {
         if (result.isPresent()) {
             responseMessage = "Data successfully loaded.";
             return result.get();
-        } else {
-            responseMessage = "Sorry, id order is not found.";
-            return null;
         }
+        responseMessage = "Sorry, id order is not found.";
+        return null;
     }
 
     // Metode untuk menambahkan order baru ke dalam data melalui repository
@@ -89,9 +86,10 @@ public class OrderService {
             if (member == null) result = new Order(employee, tableOrder); // create order obj with no member
             else result = new Order(member, employee, tableOrder); // create order obj with member assigned
 
-            tableService.getTableOrderById(tableId).setAvailable(false); // set selected table status to not available
+            tableOrder.setAvailable(false); // set selected table status to not available
             result.setCreatedAt(new Date());
 
+            tableRepository.save(tableOrder);
             orderRepository.save(result); // save order data to database
             responseMessage = "Data successfully added!";
         } else {
@@ -119,6 +117,7 @@ public class OrderService {
         Order order = getOrderById(id);
 
         if (validateDeleteOrder(order).isEmpty()) {
+            order.getTable().setAvailable(true);
             order.setDeletedAt(new Date());
             orderRepository.save(order);
             result = true;
@@ -137,14 +136,14 @@ public class OrderService {
         Product product = productService.getProductById(productId);
 
         if (validateOrderDetailData(orderId, productId, qty).isEmpty()) {
-            result = new OrderDetail(order, product, qty);
+            result = new OrderDetail(order, product, qty, product.getPrice());
             order.addOrderDetail(result); // add result obj to order obj
             int totalAmount = accumulateTotalAmount(order);
 
             order.setTotalAmount(totalAmount);
 
             if (order.getMember() != null) {
-                int pointObtained = accumulatePoints(result);
+                int pointObtained = accumulatePoints(order);
                 order.setPointObtained(pointObtained);
             }
 
@@ -183,7 +182,7 @@ public class OrderService {
         if (order != null) {
             OrderDetail orderDetail = getOrderDetailById(orderId, detailOrderId);
 
-            if (orderDetail != null && !orderDetail.isDone()) {
+            if (orderDetail != null && !orderDetail.getDone()) {
                 order.removeOrderDetail(orderDetail);
                 orderDetailRepository.deleteById(detailOrderId); // delete selected orderDetail from database
 
@@ -191,14 +190,14 @@ public class OrderService {
                 order.setTotalAmount(total); // assign new calculated total to order obj
 
                 if (order.getMember() != null) {
-                    int pointObtained = total / 1000; // recalculate point from order after selected orderDetail removed from order
+                    int pointObtained = total / 10; // recalculate point from order after selected orderDetail removed from order
                     order.setPointObtained(pointObtained);
                 }
 
                 orderRepository.save(order); // save new order data to database
                 responseMessage = "Data order detail successfully removed.";
             } else {
-                if (orderDetail != null && orderDetail.isDone()) {
+                if (orderDetail != null && orderDetail.getDone()) {
                     responseMessage = "Sorry, order with product ID " + detailOrderId + " has been done.";
                 }
                 result = false;
@@ -262,7 +261,7 @@ public class OrderService {
 
         for (int i = 0; i < order.getOrderDetails().size(); i++) { // iterate through list<OrderDetail> in Order obj
             OrderDetail detail = order.getOrderDetails().get(i);
-            int productPrice = detail.getProduct().getPrice();
+            int productPrice = detail.getPrice();
             int qty = detail.getQty();
             total += (productPrice * qty); // add price * qty to total variable for every iteration
         }
@@ -271,23 +270,17 @@ public class OrderService {
     }
 
     // Metode untuk menghitung total point yang didapatkan member
-    private int accumulatePoints(OrderDetail orderDetail) {
-        int pointFromOrder = orderDetail.getOrder().getPointObtained(); // get point value from orderDetail.order
-        int productTotalPrice = orderDetail.getProduct().getPrice() * orderDetail.getQty(); // calculate product total price
-        int pointToAdd = productTotalPrice / 1000;
-
-        pointFromOrder += pointToAdd; // accumulate existing point in Order obj with pointToAdd variable
-
-        return pointFromOrder;
+    private int accumulatePoints(Order order) {
+        return order.getTotalAmount() / 10;
     }
 
     // Metode untuk mendapatkan detail order berdasarkan orderId dan detailOrderId
     private OrderDetail getOrderDetailById(Long orderId, Long detailOrderId) {
         OrderDetail orderDetail = null;
-        List<OrderDetail> orderDetails = orderDetailRepository.getOrderDetailsByOrderIdAndDeletedAtIsNull(orderId);
+        List<OrderDetail> orderDetails = orderDetailRepository.getOrderDetailsByOrderIdAndDeletedAtIsNullOrderById(orderId);
         int i = 0;
 
-        while (i < orderDetails.size()) {
+        while (i < orderDetails.size() && orderDetail == null) {
             OrderDetail orderDetailFromLoop = orderDetails.get(i);
             Order order = orderDetailFromLoop.getOrder();
 
@@ -296,14 +289,12 @@ public class OrderService {
             } else {
                 if (order.getId().equals(orderId) && orderDetailFromLoop.getId().equals(detailOrderId)) {
                     orderDetail = orderDetailFromLoop;
+                } else {
+                    responseMessage = "Sorry, cannot find Order Detail with ID " + detailOrderId + " on Order with ID " + orderId + ".";
                 }
             }
 
             i++;
-        }
-
-        if (orderDetail == null) {
-            responseMessage = "Sorry, cannot find Order Detail with ID " + detailOrderId + " on Order with ID " + orderId + ".";
         }
 
         return orderDetail;

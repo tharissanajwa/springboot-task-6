@@ -1,7 +1,7 @@
 package com.springboot.task6.services;
 
-import com.springboot.task6.repositories.EmployeeRepository;
 import com.springboot.task6.model.Employee;
+import com.springboot.task6.repositories.EmployeeRepository;
 import com.springboot.task6.utilities.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,11 +24,13 @@ public class EmployeeService {
 
     // Metode untuk mendapatkan semua daftar pegawai yang belum terhapus melalui repository
     public List<Employee> getAllEmployee() {
-        if (employeeRepository.findAllByDeletedAtIsNull().isEmpty()) {
-            seedData();
+        List<Employee> result = employeeRepository.findAllByDeletedAtIsNullOrderByName();
+        if (result.isEmpty()) {
+            responseMessage = "Data doesn't exists, please insert new data employee.";
+        } else {
+            responseMessage = "Data successfully loaded.";
         }
-        responseMessage = "Data successfully loaded.";
-        return employeeRepository.findAllByDeletedAtIsNull();
+        return result;
     }
 
     // Metode untuk mendapatkan data pegawai berdasarkan id melalui repository
@@ -43,12 +45,16 @@ public class EmployeeService {
     }
 
     // Metode untuk menambahkan pegawai baru ke dalam data melalui repository
-    public Employee insertEmployee(String name) {
+    public Employee insertEmployee(String name, String phone) {
         Employee result = null;
-        if (inputValidation(name) != "") {
-            responseMessage = inputValidation(name);
+        String validateName = Validation.inputTrim(name);
+        String validatePhone = Validation.inputTrim(phone);
+        if (!inputValidation(validateName).isEmpty()) {
+            responseMessage = inputValidation(validateName);
+        } else if (!inputPhoneValidation(validatePhone).isEmpty()) {
+            responseMessage = inputPhoneValidation(validatePhone);
         } else {
-            result = new Employee(Validation.inputTrim(name));
+            result = new Employee(validateName, validatePhone);
             result.setCreatedAt(new Date());
             employeeRepository.save(result);
             responseMessage = "Data successfully added!";
@@ -57,14 +63,20 @@ public class EmployeeService {
     }
 
     // Metode untuk memperbarui informasi pegawai melalui repository
-    public Employee updateEmployee(Long id, String name) {
+    public Employee updateEmployee(Long id, String name, String phone) {
         Employee result = getEmployeeById(id);
+        String validateName = Validation.inputTrim(name);
+        String validatePhone = Validation.inputTrim(phone);
         if (result != null) {
-            if (inputValidation(name) != "") {
-                responseMessage = inputValidation(name);
+            if (!inputValidation(validateName).isEmpty()) {
+                responseMessage = inputValidation(validateName);
+                return null;
+            } else if (!inputPhoneValidation(validatePhone).isEmpty()) {
+                responseMessage = inputPhoneValidation(validatePhone);
                 return null;
             } else {
-                result.setName(Validation.inputTrim(name));
+                result.setName(validateName);
+                result.setPhone(validatePhone);
                 result.setUpdatedAt(new Date());
                 employeeRepository.save(result);
                 responseMessage = "Data successfully updated!";
@@ -99,21 +111,16 @@ public class EmployeeService {
         return result;
     }
 
-    // Metode untuk menambahkan sample awal
-    private void seedData() {
-        Employee employee1 = new Employee("Ahmad Budi Santoso");
-        employeeRepository.save(employee1);
+    // Metode untuk memvalidasi nomor telepon inputan pengguna
+    private String inputPhoneValidation(String phone) {
+        String result = "";
+        Optional<Employee> employeeExist = employeeRepository.findByPhoneAndDeletedAtIsNull(phone);
 
-        Employee employee2 = new Employee("Maria Dewi Suryani");
-        employeeRepository.save(employee2);
-
-        Employee employee3 = new Employee("Rizky Pratama Putra");
-        employeeRepository.save(employee3);
-
-        Employee employee4 = new Employee("Siti Aisyah Rahman");
-        employeeRepository.save(employee4);
-
-        Employee employee5 = new Employee("Fajar Hidayatullah");
-        employeeRepository.save(employee5);
+        if (employeeExist.isPresent()) {
+            result = "Sorry, employee phone already exists.";
+        } else if (!phone.matches("^\\d+$") && !(phone.length() >= 10 && phone.length() <= 13)) {
+            result = "Invalid phone number. Please enter a valid phone number.";
+        }
+        return result;
     }
 }

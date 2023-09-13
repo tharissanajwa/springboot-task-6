@@ -1,6 +1,5 @@
 package com.springboot.task6.services;
 
-import com.springboot.task6.model.Employee;
 import com.springboot.task6.model.Member;
 import com.springboot.task6.repositories.MemberRepository;
 import com.springboot.task6.utilities.Validation;
@@ -16,9 +15,6 @@ public class MemberService {
     @Autowired
     private MemberRepository memberRepository;
 
-    @Autowired
-    private Validation validation;
-
     // Pesan status untuk memberi informasi kepada pengguna
     private String responseMessage;
 
@@ -29,11 +25,13 @@ public class MemberService {
 
     // Metode untuk mendapatkan semua daftar anggota yang belum terhapus melalui repository
     public List<Member> getAllMember() {
-        if (memberRepository.findAllByDeletedAtIsNull().isEmpty()) {
-            seedData();
+        List<Member> result = memberRepository.findAllByDeletedAtIsNullOrderByName();
+        if (result.isEmpty()) {
+            responseMessage = "Data doesn't exists, please insert new data member.";
+        } else {
+            responseMessage = "Data successfully loaded.";
         }
-        responseMessage = "Data successfully loaded.";
-        return memberRepository.findAllByDeletedAtIsNull();
+        return result;
     }
 
     // Metode untuk mendapatkan data anggota berdasarkan id melalui repository
@@ -42,19 +40,22 @@ public class MemberService {
         if (!result.isPresent()) {
             responseMessage = "Sorry, id member is not found.";
             return null;
-        } else {
-            responseMessage = "Data successfully loaded.";
-            return result.get();
         }
+        responseMessage = "Data successfully loaded.";
+        return result.get();
     }
 
     // Metode untuk menambahkan anggota ke dalam data melalui repository
-    public Member insertMember(String name) {
+    public Member insertMember(String name, String phone) {
         Member result = null;
-        if (inputValidation(name) != "") {
-            responseMessage = inputValidation(name);
+        String validateName = Validation.inputTrim(name);
+        String validatePhone = Validation.inputTrim(phone);
+        if (!inputValidation(validateName).isEmpty()) {
+            responseMessage = inputValidation(validateName);
+        } else if (!inputPhoneValidation(validatePhone).isEmpty()) {
+            responseMessage = inputPhoneValidation(validatePhone);
         } else {
-            result = new Member(Validation.inputTrim(name));
+            result = new Member(validateName, validatePhone);
             result.setCreatedAt(new Date());
             memberRepository.save(result);
             responseMessage = "Data successfully added!";
@@ -63,14 +64,20 @@ public class MemberService {
     }
 
     // Metode untuk memperbarui informasi anggota melalui repository
-    public Member updateMember(Long id, String name) {
-        Member result = null;
-        if (getMemberById(id) != null) {
-            if (inputValidation(name) != "") {
-                responseMessage = inputValidation(name);
+    public Member updateMember(Long id, String name, String phone) {
+        Member result = getMemberById(id);
+        String validateName = Validation.inputTrim(name);
+        String validatePhone = Validation.inputTrim(phone);
+        if (result != null) {
+            if (!inputValidation(validateName).isEmpty()) {
+                responseMessage = inputValidation(validateName);
+                return null;
+            } else if (!inputPhoneValidation(validatePhone).isEmpty()) {
+                responseMessage = inputPhoneValidation(validatePhone);
+                return null;
             } else {
-                getMemberById(id).setName(Validation.inputTrim(name));
-                result = getMemberById(id);
+                result.setName(validateName);
+                result.setPhone(validatePhone);
                 result.setUpdatedAt(new Date());
                 memberRepository.save(result);
                 responseMessage = "Data successfully updated!";
@@ -104,21 +111,16 @@ public class MemberService {
         return result;
     }
 
-    // Metode untuk menambahkan sample awal
-    private void seedData() {
-        Member member1 = new Member("Sarah Utami");
-        memberRepository.save(member1);
+    // Metode untuk memvalidasi nomor telepon inputan pengguna
+    private String inputPhoneValidation(String phone) {
+        String result = "";
+        Optional<Member> memberExist = memberRepository.findByPhoneAndDeletedAtIsNull(Validation.inputTrim(phone));
 
-        Member member2 = new Member("Hasan Abdullah");
-        memberRepository.save(member2);
-
-        Member member3 = new Member("Rina Kartika");
-        memberRepository.save(member3);
-
-        Member member4 = new Member("Budi Setiawan");
-        memberRepository.save(member4);
-
-        Member member5 = new Member("Maya Wijaya");
-        memberRepository.save(member5);
+        if (memberExist.isPresent()) {
+            result = "Sorry, member phone already exists.";
+        } else if (!phone.trim().matches("^\\d+$") && !(phone.trim().length() >= 10 && phone.trim().length()<=13)) {
+            result = "Invalid phone number. Please enter a valid phone number.";
+        }
+        return result;
     }
 }

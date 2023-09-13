@@ -7,8 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
-    List<Order> findAllByDeletedAtIsNull();
+    List<Order> findAllByDeletedAtIsNullOrderByIdDesc();
     Optional<Order> findByIdAndDeletedAtIsNull(Long id);
-
-    List<Order> findAllByDeletedAtIsNullAndIsPaidTrue();
+    List<Order> findAllByDeletedAtIsNullAndIsPaidTrueOrderByIdDesc();
 }

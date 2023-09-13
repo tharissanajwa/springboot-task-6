@@ -20,11 +20,11 @@ public class Product {
     private Long id;
     private String name;
     private Integer price;
-
+    @Column(columnDefinition = "TEXT")
+    private String description;
     @JsonIgnore
     @OneToMany(mappedBy = "product")
     private List<OrderDetail> orderDetails;
-
     @JsonIgnore
     @Column(name = "created_at", columnDefinition = "DATE DEFAULT CURRENT_DATE")
     private Date createdAt;
@@ -39,9 +39,10 @@ public class Product {
 
     }
 
-    public Product(String name, Integer price) {
+    public Product(String name, Integer price, String description) {
         this.name = name;
         this.price = price;
+        this.description = description;
         this.createdAt = new Date();
     }
 
@@ -67,6 +68,14 @@ public class Product {
 
     public void setPrice(Integer price) {
         this.price = price;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Date getCreatedAt() {

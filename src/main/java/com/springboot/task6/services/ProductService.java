@@ -1,6 +1,5 @@
 package com.springboot.task6.services;
 
-import com.springboot.task6.model.Employee;
 import com.springboot.task6.model.Product;
 import com.springboot.task6.repositories.ProductRepository;
 import com.springboot.task6.utilities.Validation;
@@ -16,9 +15,6 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
-    @Autowired
-    private Validation validation;
-
     // Pesan status untuk memberi informasi kepada pengguna
     private String responseMessage;
 
@@ -29,11 +25,13 @@ public class ProductService {
 
     // Metode untuk mendapatkan semua daftar barang yang belum terhapus melalui repository
     public List<Product> getAllProduct() {
-        if (productRepository.findAllByDeletedAtIsNull().isEmpty()) {
-            seedData();
+        List<Product> result = productRepository.findAllByDeletedAtIsNullOrderByName();
+         if (result.isEmpty()) {
+            responseMessage = "Data doesn't exists, please insert new data product.";
+        } else {
+            responseMessage = "Data successfully loaded.";
         }
-        responseMessage = "Data successfully loaded.";
-        return productRepository.findAllByDeletedAtIsNull();
+         return result;
     }
 
     // Metode untuk mendapatkan data barang berdasarkan id melalui repository
@@ -42,14 +40,14 @@ public class ProductService {
         if (!result.isPresent()) {
             responseMessage = "Sorry, id product is not found.";
             return null;
-        } else {
-            responseMessage = "Data successfully loaded.";
-            return result.get();
         }
+        responseMessage = "Data successfully loaded.";
+        return result.get();
+
     }
 
     // Metode untuk menambahkan barang ke dalam data melalui repository
-    public Product insertProduct(String name, Integer price) {
+    public Product insertProduct(String name, Integer price, String description) {
         Product result = null;
         String nameValidation = inputValidation(name);
         String priceValidation = inputValidationPrice(price);
@@ -59,7 +57,7 @@ public class ProductService {
         } else if (!priceValidation.isEmpty()) {
             responseMessage = priceValidation;
         } else {
-            result = new Product(Validation.inputTrim(name), price);
+            result = new Product(Validation.inputTrim(name), price, Validation.inputTrim(description));
             result.setCreatedAt(new Date());
             productRepository.save(result);
             responseMessage = "Data successfully added!";
@@ -68,7 +66,7 @@ public class ProductService {
     }
 
     // Metode untuk memperbarui informasi barang melalui repository
-    public Product updateProduct(Long id, String name, Integer price) {
+    public Product updateProduct(Long id, String name, Integer price, String description) {
         Product result = getProductById(id);
         String nameValidation = inputValidation(name);
         String priceValidation = inputValidationPrice(price);
@@ -83,6 +81,7 @@ public class ProductService {
             } else {
                 result.setName(Validation.inputTrim(name));
                 result.setPrice(price);
+                result.setDescription(Validation.inputTrim(description));
                 result.setUpdatedAt(new Date());
                 productRepository.save(result);
                 responseMessage = "Data successfully updated!";
@@ -123,23 +122,5 @@ public class ProductService {
             result = "Sorry, price must be more than 0.";
         }
         return result;
-    }
-
-    // Metode untuk menambahkan sample awal
-    private void seedData() {
-        Product product1 = new Product("Nasi Timbel Sunda", 40_000);
-        productRepository.save(product1);
-
-        Product product2 = new Product("Sate Maranggi", 30_000);
-        productRepository.save(product2);
-
-        Product product3 = new Product("Pepes Ikan Mujair", 45_000);
-        productRepository.save(product3);
-
-        Product product4 = new Product("Terong Bacem", 20_000);
-        productRepository.save(product4);
-
-        Product product5 = new Product("Karedok", 25_000);
-        productRepository.save(product5);
     }
 }

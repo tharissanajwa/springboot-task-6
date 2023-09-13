@@ -20,7 +20,13 @@ public class Payment {
     private Long id;
     @Column(name = "total_paid")
     private Integer totalPaid;
+    @Column(name = "total_amount")
+    private Integer totalAmount;
+    @Column(name = "point_used", columnDefinition = "INTEGER DEFAULT 0")
+    private Integer pointUsed;
+    @Column(name = "discount")
     private Integer discount;
+    @Column(name = "change")
     private Integer change;
     @Column(name = "created_at", columnDefinition = "DATE DEFAULT CURRENT_DATE")
     private Date createdAt;
@@ -28,7 +34,6 @@ public class Payment {
     private Date updatedAt;
     @Column(name = "deleted_at", columnDefinition = "DATE DEFAULT NULL")
     private Date deletedAt;
-
     @OneToOne
     @JoinColumn(name = "order_id")
     private Order order;
@@ -36,14 +41,30 @@ public class Payment {
     public Payment() {
     }
 
-    public Payment(Integer totalPaid, Integer discount, Order order) {
+    public Payment(Integer totalPaid, Integer discount, Order order, Integer pointUsed) {
         this.totalPaid = totalPaid;
         this.discount = discount;
         this.order = order;
+        this.totalAmount = order.getTotalAmount();
+
+        if (pointUsed == null) this.pointUsed = 0;
+        else this.pointUsed = pointUsed;
     }
 
     public Long getId() {
         return this.id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Integer getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(Integer totalAmount) {
+        this.totalAmount = totalAmount;
     }
 
     public Integer getTotalPaid() {
@@ -104,5 +125,13 @@ public class Payment {
 
     public void setChange(Integer change) {
         this.change = change;
+    }
+
+    public Integer getPointUsed() {
+        return pointUsed;
+    }
+
+    public void setPointUsed(Integer pointUsed) {
+        this.pointUsed = pointUsed;
     }
 }
